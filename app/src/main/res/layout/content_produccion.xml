@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_produccion"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:text="produccion"
+                android:textColor="@color/colorFont"
+                android:backgroundTint="@color/colorAccentDark"/>
+
+            <Button
+                android:id="@+id/btn_cuadrilla"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:text="cuadrilla"
+                android:textColor="@color/colorFont"
+                android:backgroundTint="@color/colorAccentDark" />
+
+            <Button
+                android:id="@+id/btn_reporte"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:text="Reporte"
+                android:textColor="@color/colorFont"
+                android:backgroundTint="@color/colorAccentDark"/>
+
+            <Button
+                android:id="@+id/btn_enviar"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:text="enviar"
+                android:textColor="@color/colorFont"
+                android:backgroundTint="@color/colorAccentDark"/>
+
+            <Button
+                android:id="@+id/btn_finalizar"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:text="Finalizar jornada"
+                android:textColor="@color/colorFont"
+                android:backgroundTint="@color/colorAccentDark"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

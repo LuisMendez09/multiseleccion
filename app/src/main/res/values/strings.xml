@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Corte</string>
+    <string name="action_configuracion">Configuracion</string>
+    <string name="action_menuActividades">Actividades</string>
+    <string name="action_menuPuestos">puestosActual</string>
+    <string name="action_import">importar</string>
+    <string name="action_add">Añadir</string>
+    <string name="action_addCajas">Añadir cajas</string>
+    <string name="action_addPuesto">Añadir puesto</string>
+    <string name="action_addActividad">Añadir actividad</string>
+    <string name="action_exportar">Enviar informacion</string>
+    <string name="action_finalizar">finalizar jornada</string>
+    <string name="action_cambiarActividad">Cambiar Actividad</string>
+    <string name="action_cambiarPuestos">Cambiar Puesto</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

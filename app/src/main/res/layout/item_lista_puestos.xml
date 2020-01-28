@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    android:background="@drawable/borde">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorAccentDark"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:paddingRight="@dimen/padding_left_right_componentes">
+
+
+        <TextView
+            android:id="@+id/tv_puesto_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorFont"
+            android:textStyle="bold"
+            android:textSize="@dimen/font_label_titulo"
+            android:text="PERSONAL CAMPO" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:paddingRight="@dimen/padding_left_right_componentes"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/lb_horaInicial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:textStyle="bold"
+            android:paddingRight="@dimen/padding_left_right_componentes"
+            android:textSize="@dimen/font_label"
+            android:text="Hora Inicial:"/>
+
+        <TextView
+            android:id="@+id/tv_horaInicio_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_label"
+            android:text="12:00:00" />
+
+        <TextView
+            android:id="@+id/lb_horaFinal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:paddingRight="@dimen/padding_left_right_componentes"
+            android:paddingLeft="@dimen/padding_left_right_componentes"
+            android:textSize="@dimen/font_label"
+            android:text="Hora final:" />
+
+        <TextView
+            android:id="@+id/tv_horaFin_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_label"
+            android:text="13:00:00" />
+
+    </LinearLayout>
+
+</LinearLayout>

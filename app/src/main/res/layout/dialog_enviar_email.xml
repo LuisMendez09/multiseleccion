@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/padding_left_right_componentes"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/editText4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="@dimen/title_font_zise"
+            android:textColor="@color/colorFont"
+            android:inputType="textPersonName"
+            android:text="Enviar datos" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_top_bottom_componentes"
+        android:paddingRight="@dimen/padding_left_right_componentes"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_bottom_up_componentes"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lb_horaInicial_EditPuesto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_zise"
+                android:paddingBottom="@dimen/padding_zise"
+                android:text="Fecha Inicial" />
+
+            <TextView
+                android:id="@+id/tv_fecha_inicial_mail"
+                android:background="@drawable/borde"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/padding_zise"
+                android:paddingBottom="@dimen/padding_zise"
+                android:gravity="bottom|left"
+                android:textSize="@dimen/title_font_zise"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_bottom_up_componentes"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lb_hora_EditPuesto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_zise"
+                android:paddingBottom="@dimen/padding_zise"
+                android:text="Fecha final" />
+
+            <TextView
+                android:id="@+id/tv_fecha_final_mail"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/padding_zise"
+                android:paddingBottom="@dimen/padding_zise"
+                android:gravity="bottom|left"
+                android:textSize="@dimen/title_font_zise"
+                android:text=""
+                android:background="@drawable/borde"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary">
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                android:id="@+id/lb_consecutivo_produccion"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center|left"
+                android:text="Consecutivo"
+                android:textColor="@color/colorFont"
+                android:textSize="@dimen/sub_title_font_zise"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/lb_nombreTrabajador_produccion"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="NOMBRE TRABAJADOR"
+                android:textColor="@color/colorFont"
+                android:textSize="@dimen/title_font_zise"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_left_right_dialog"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_text_view"
+            android:layout_marginBottom="@dimen/margin_bottom_up_componentes"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Primera"
+                android:background="@color/colorAccentSecundario"
+                android:textColor="@color/colorFont"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/et_primera_produccion"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:inputType="number"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:background="@android:color/transparent"
+                android:text="0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_text_view"
+            android:layout_marginBottom="@dimen/margin_bottom_up_componentes"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Segunda"
+                android:background="@color/colorAccentSecundario"
+                android:textColor="@color/colorFont"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/et_segunda_produccion"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:inputType="number"
+                android:background="@android:color/transparent"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:text="0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_text_view"
+            android:layout_marginBottom="@dimen/margin_bottom_up_componentes"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Agranel"
+                android:background="@color/colorAccentSecundario"
+                android:textColor="@color/colorFont"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/et_agranel_produccion"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:inputType="number"
+                android:background="@android:color/transparent"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:text="0"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

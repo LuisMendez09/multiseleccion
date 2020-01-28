@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/padding_left_right_componentes"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/editText4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="@dimen/title_font_zise"
+            android:textColor="@color/colorFont"
+            android:inputType="textPersonName"
+            android:text="Configuraciones" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_top_bottom_componentes"
+        android:paddingBottom="@dimen/padding_top_bottom_componentes"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/sub_title_font_zise"
+            android:text="Parametros de captura"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:text="Tipo de captura: "
+                android:gravity="center|right"/>
+
+            <EditText
+                android:id="@+id/et_tiempoMas"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:text="0"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_top_bottom_componentes"
+        android:paddingBottom="@dimen/padding_top_bottom_componentes"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/sub_title_font_zise"
+            android:text="Parametros para envio de correo"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:text="PARA: "
+                android:gravity="center|right"/>
+
+            <EditText
+                android:id="@+id/et_para"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/padding_left_right_componentes"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:text="CC: "
+                android:gravity="center|right"/>
+
+            <EditText
+                android:id="@+id/et_conCopia"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/padding_left_right_componentes"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:text="ASUNTO: "
+                android:gravity="center|right"/>
+
+            <EditText
+                android:id="@+id/et_asunto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/padding_left_right_componentes"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:text="MENSAJE: "
+                android:gravity="center|right"/>
+
+            <EditText
+                android:id="@+id/et_mensaje"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/padding_left_right_componentes"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

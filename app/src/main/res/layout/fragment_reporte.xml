@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".views.fragment.reporte">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/lv_reporte"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@drawable/borde"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center|left"
+            android:paddingLeft="@dimen/padding_left_right_componentes"
+            android:text="PRODUCCION TOTAL"
+            android:textColor="@color/colorFont"
+            android:textSize="@dimen/font_label_titulo"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:text="Primera"
+                android:textSize="@dimen/font_label"
+                android:textColor="@color/colorFont"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:paddingRight="@dimen/padding_left_right_componentes"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Segunda"
+                android:textSize="@dimen/font_label"
+                android:textColor="@color/colorFont"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:paddingRight="@dimen/padding_left_right_componentes"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center|right"
+                android:text="Agranel"
+                android:textSize="@dimen/font_label"
+                android:textColor="@color/colorFont"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:paddingRight="@dimen/padding_left_right_componentes"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_totalPrimera_reporte"
+                android:layout_width="148dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:textColor="@color/colorFont"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:paddingRight="@dimen/padding_left_right_componentes"
+                android:paddingBottom="@dimen/padding_top_bottom_componentes"
+                android:textSize="@dimen/font_label"
+                android:text="0000" />
+
+            <TextView
+                android:id="@+id/tv_totalSegunda_reporte"
+                android:layout_width="148dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/colorFont"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:paddingRight="@dimen/padding_left_right_componentes"
+                android:paddingBottom="@dimen/padding_top_bottom_componentes"
+                android:textSize="@dimen/font_label"
+                android:text="0000" />
+
+            <TextView
+                android:id="@+id/tv_totalAgranel_reporte"
+                android:layout_width="148dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorFont"
+                android:gravity="center|right"
+                android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:paddingRight="@dimen/padding_left_right_componentes"
+                android:paddingBottom="@dimen/padding_top_bottom_componentes"
+                android:textSize="@dimen/font_label"
+                android:text="0000" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

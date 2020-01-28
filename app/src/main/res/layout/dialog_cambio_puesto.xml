@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/padding_left_right_componentes"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/editText4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="@dimen/title_font_zise"
+            android:textColor="@color/colorFont"
+            android:inputType="textPersonName"
+            android:text="Modificacion de puesto" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:paddingRight="@dimen/padding_left_right_componentes"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:orientation="horizontal">
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_numero"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/padding_top_bottom_componentes"
+                android:paddingBottom="@dimen/padding_top_bottom_componentes"
+                android:gravity="center|left"
+                android:text="Consecutivo"
+                android:textColor="@color/colorFont"
+                android:textSize="@dimen/sub_title_font_zise"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_nombre"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:paddingTop="@dimen/padding_top_bottom_componentes"
+                android:paddingBottom="@dimen/padding_top_bottom_componentes"
+                android:gravity="center"
+                android:text="NOMBRE TRABAJADOR"
+                android:textColor="@color/colorFont"
+                android:textSize="@dimen/title_font_zise"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_top_bottom_componentes"
+        android:layout_marginLeft="@dimen/padding_left_right_componentes"
+        android:layout_marginRight="@dimen/padding_left_right_componentes"
+        android:orientation="vertical">
+<!--
+        <TextView
+            android:id="@+id/lb_nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trabajador" />
+
+        <TextView
+            android:id="@+id/tv_nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/lb_numero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Consecutivo" />
+
+        <TextView
+            android:id="@+id/tv_numero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />-->
+
+        <TextView
+            android:id="@+id/lb_puesto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Puesto Actual" />
+
+        <TextView
+            android:id="@+id/tv_puesto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/lb_puestoNuevo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nuevo puesto" />
+
+        <Spinner
+            android:id="@+id/sp_puesto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/lb_horaCambio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hora de cambio" />
+
+        <TimePicker
+            android:id="@+id/tp_horaCambio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner" />
+
+    </LinearLayout>
+
+</LinearLayout>

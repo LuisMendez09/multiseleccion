@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/borde">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorAccentDark"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:paddingRight="@dimen/padding_left_right_componentes">
+        <TextView
+            android:id="@+id/tv_actividad_itemDetalleReporte"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="actividad"
+            android:textColor="@color/colorFont"
+            android:textStyle="bold"
+            android:textSize="@dimen/font_label_titulo"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:paddingRight="@dimen/padding_left_right_componentes">
+        <TextView
+            android:id="@+id/lb_cajasPrimera_itemDetalleReporte"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_label"
+            android:text="Primera"
+            android:gravity="center|left"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/lb_cajasSegunda_itemDetalleReporte"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_label"
+            android:text="Segunda"
+            android:gravity="center"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/lb_cajasAgranel_itemDetalleReporte"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_label"
+            android:text="Agranel"
+            android:gravity="center|right"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/padding_left_right_componentes"
+        android:paddingRight="@dimen/padding_left_right_componentes">
+        <TextView
+            android:id="@+id/tv_cajasPrimera_itemDetalleReporte"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_label"
+            android:text="000"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@+id/tv_cajasSegunda_itemDetalleReporte"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_label"
+            android:text="000"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_cajasAgranel_itemDetalleReporte"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_label"
+            android:text="000"
+            android:gravity="center|right"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>

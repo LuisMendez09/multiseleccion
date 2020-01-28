@@ -1,0 +1,28 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="list_item_spacing">16dp</dimen>
+    <dimen name="list_item_spacing_half">8dp</dimen>
+    <dimen name="title_font_zise">20dp</dimen>
+    <dimen name="sub_title_font_zise">18dp</dimen>
+    <dimen name="font_zise">16dp</dimen>
+    <dimen name="font_button">22dp</dimen>
+    <dimen name="font_label">16dp</dimen>
+    <dimen name="font_label_titulo">18dp</dimen>
+    <dimen name="zise_button_width">150dp</dimen>
+    <dimen name="zise_button_height">70dp</dimen>
+
+    <dimen name="padding_zise">2dp</dimen>
+    <dimen name="marginirght_button">12dp</dimen>
+    <dimen name="marginTop_button">12dp</dimen>
+    <dimen name="marginBotton_button">12dp</dimen>
+    <dimen name="marginleft_button">12dp</dimen>
+
+
+
+    <dimen name="margin_left_right_dialog">10dp</dimen>
+    <dimen name="margin_bottom_up_dialog">5dp</dimen>
+
+    <dimen name="margin_bottom_up_componentes">15dp</dimen>
+    <dimen name="padding_left_right_componentes">12dp</dimen>
+    <dimen name="padding_top_bottom_componentes">6dp</dimen>
+</resources>
