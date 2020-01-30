@@ -1,5 +1,6 @@
 package com.luis.corte.Controlers;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -32,10 +33,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class Controlador {
-    private Activity activity=null;
+    private Activity activity;
     private static Settings settings=null;
     private static Configuracion configuracion=null;
     private static ArrayList<Trabajadores> listaTrabajadores = new ArrayList<>();
@@ -44,7 +47,7 @@ public class Controlador {
     private static ArrayList<CatalogoCajas> listaTamaiosCajas = new ArrayList<>();
     private static DBHandler dbHandlerl=null;
 
-    public static enum TiposError {
+    public enum TiposError {
         ERROR_SETTING_NULL,
         ERROR_DB,
         ERROR_CAMPOS_VACIOS,
@@ -70,12 +73,12 @@ public class Controlador {
         SESION_REINIADA,
         SESION_REINICIAR,
         EXITOSO
-    };
+    }
 
     public Controlador(Activity activity) {
         this.activity = activity;
         dbHandlerl = new DBHandler(this.activity);
-        configuracion = dbHandlerl.getConfiguracion(Long.valueOf(1));
+        configuracion = dbHandlerl.getConfiguracion((long) 1);
         if(configuracion==null){
             TiposError tiposError = addConfiguracion(new Configuracion("", "", "", "Produccion ", "", 0, 0), null);
             Log.i("captura",tiposError.name());
@@ -101,7 +104,7 @@ public class Controlador {
     /////////////////////////////////METODOS CONFIGURACION//////////////////////////////
     public Configuracion getConfiguracion(){
         if(configuracion==null)
-            configuracion = dbHandlerl.getConfiguracion(Long.valueOf(1));
+            configuracion = dbHandlerl.getConfiguracion((long)1);
 
         return configuracion;
     }
@@ -110,12 +113,11 @@ public class Controlador {
         TiposError tiposError = validarCampo(c,cAnterior);
 
         if(tiposError==TiposError.EXITOSO){
-            long respuesta = 0;
+            long respuesta;
             if(c.getId()==null){
                 respuesta  = dbHandlerl.addConfiguracion(c);
             }else{
-                int i = dbHandlerl.updateConfiguracion(c);
-                respuesta = i;
+                respuesta = dbHandlerl.updateConfiguracion(c);
             }
 
             if(respuesta!=-1){
@@ -135,26 +137,21 @@ public class Controlador {
 
     private TiposError validarCampo(Configuracion configuracion,Configuracion configuracionAnterior){
         TiposError tiposError = TiposError.EXITOSO;
-        //if(!configuracion.getPara().equals("")&&!configuracion.getAsunto().equals("")){
-            if(configuracionAnterior!=null){
-                if(!configuracion.getPara().equals(configuracionAnterior.getPara())||!configuracion.getCc().equals(configuracionAnterior.getCc())
-                        ||!configuracion.getAsunto().equals(configuracionAnterior.getAsunto())||!configuracion.getMensaje().equals(configuracionAnterior.getMensaje())
-                        ||configuracion.getTiempoMas()!=configuracionAnterior.getTiempoMas()){
 
-                }else{
-                    tiposError = TiposError.SIN_CAMBIOS;
-                }
+        if(configuracionAnterior!=null){
+            if(configuracion.getPara().equals(configuracionAnterior.getPara())||configuracion.getCc().equals(configuracionAnterior.getCc())
+                    ||configuracion.getAsunto().equals(configuracionAnterior.getAsunto())||configuracion.getMensaje().equals(configuracionAnterior.getMensaje())
+                    ||configuracion.getTiempoMas().equals(configuracionAnterior.getTiempoMas())){
+                tiposError = TiposError.SIN_CAMBIOS;
             }
-        /*}else{
-            tiposError = TiposError.ERROR_CAMPOS_VACIOS;
-        }*/
+        }
 
         return tiposError;
     }
 
     /////////////////////////////////METODOS DE SETTING//////////////////////////////
     public Settings getSetting(){
-        settings = dbHandlerl.getSetting(Long.valueOf(1));
+        settings = dbHandlerl.getSetting((long)1);
         if(settings==null){
             settings = new Settings(0,0,1,0,0,-1,listaActividades.get(0));
             dbHandlerl.addSettings(settings);
@@ -166,8 +163,8 @@ public class Controlador {
         TiposError r= TiposError.ERROR_DB;
         if(settings!=null) {
             Long i = dbHandlerl.addSettings(settings);
-            if(i!=Long.valueOf(-1)){
-                this.settings = settings;
+            if(!i.equals((long)-1)){
+                Controlador.settings = settings;
                 r = TiposError.EXITOSO;
             }
         }else{
@@ -176,12 +173,12 @@ public class Controlador {
         return r;
     }
 
-    public TiposError updateSetting(Settings settings){
+    private TiposError updateSetting(Settings settings){
         TiposError r= TiposError.ERROR_DB;
         if(settings!=null) {
            int i = dbHandlerl.updateSetting(settings);
            if(i!=-1){
-               this.settings = settings;
+               Controlador.settings = settings;
                r = TiposError.EXITOSO;
            }
 
@@ -198,21 +195,20 @@ public class Controlador {
         listaTrabajadores = dbHandlerl.getTrabajdores();
 
         settings.setFechaInicio(Complementos.getDateTimeActual());
-        settings.setFechaFinal(Long.valueOf(0));
+        settings.setFechaFinal((long)0);
         settings.setInicioJornada(1);
         settings.setFinJornada(0);
         settings.setCapturaTrabaajdor(0);
         settings.setActividades(listaActividades.get(0));
-        TiposError tiposError = updateSetting(settings);
-        return  tiposError;
+
+        return  updateSetting(settings);
     }
 
     public TiposError iniciarSession(CatalogoActividades catalogoActividades){
         settings.setCapturaTrabaajdor(listaTrabajadores.size());
         settings.setActividades(catalogoActividades);
-        TiposError tiposError = updateSetting(settings);
 
-        return  tiposError;
+        return  updateSetting(settings);
     }
 
     public TiposError finalizarSesion(){
@@ -263,17 +259,17 @@ public class Controlador {
     public TiposError validarInicioSesion(){//al finalizar poner en 0 iniciojornada en 1 finalizarjornada y 0 totaltrabajadores
         TiposError r = TiposError.SESION_NO_VALIDA;
         Log.i("inicio",settings.toString());
-        if(settings.getInicioJornada()==0 && settings.getCapturaTrabaajdor()==-1 && settings.getFinJornada()==1 && !settings.getFechaString().equals(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()))){//continuar  nueva sesion
+        if(settings.getInicioJornada()==0 && settings.getCapturaTrabaajdor()==-1 && settings.getFinJornada()==1 && !settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))){//continuar  nueva sesion
             r = TiposError.SESION_REINICIAR;//sesion finalizada en diferente dia ---> reiniciar sesion y continuar a capturar trabajadores
-        }else if(settings.getInicioJornada()==1 && settings.getCapturaTrabaajdor()>0 && settings.getFinJornada()==0 && settings.getFechaString().equals(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()))){
+        }else if(settings.getInicioJornada()==1 && settings.getCapturaTrabaajdor()>0 && settings.getFinJornada()==0 && settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))){
             r = TiposError.SESION_INICIADA; // sesion no finalizada y en el mismo dia --> continuar
-        }else if(settings.getInicioJornada()==1  && settings.getCapturaTrabaajdor()>0 && settings.getFinJornada()==0 && !settings.getFechaString().equals(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()))){
+        }else if(settings.getInicioJornada()==1  && settings.getCapturaTrabaajdor()>0 && settings.getFinJornada()==0 && !settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))){
             r = TiposError.SESION_NO_FINALIZADA; // sesion no finalizada y en dias diferentes --> finalizar sesion, reiniciar y continuar
-        }else if(settings.getInicioJornada()==0  && settings.getCapturaTrabaajdor()==-1 && settings.getFinJornada()==1 && settings.getFechaString().equals(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()))){
+        }else if(settings.getInicioJornada()==0  && settings.getCapturaTrabaajdor()==-1 && settings.getFinJornada()==1 && settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))){
             r = TiposError.SESION_FINALIZADA; // sesion finalizada y en el mismo dia --> bloquear edicion , mostrar solo reportes
-        }else if(settings.getInicioJornada()==1  && settings.getCapturaTrabaajdor()==0 && settings.getFinJornada()==0 && settings.getFechaString().equals(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()))){
+        }else if(settings.getInicioJornada()==1  && settings.getCapturaTrabaajdor()==0 && settings.getFinJornada()==0 && settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))){
             r = TiposError.SESION_REINIADA; // sesion reiniciada sin captura de trabajadores --> ir a captura trabajadores
-        }else if(settings.getInicioJornada()==1  && settings.getCapturaTrabaajdor()==0 && settings.getFinJornada()==0 && !settings.getFechaString().equals(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()))){
+        }else if(settings.getInicioJornada()==1  && settings.getCapturaTrabaajdor()==0 && settings.getFinJornada()==0 && !settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))){
             r = TiposError.SESION_REINICIAR; // sesion reiniciada sin captura de trabajadores --> ir a captura trabajadores
         }
 
@@ -308,16 +304,13 @@ public class Controlador {
     }
 
     public CatalogoPuestos getListaPuestos(Long id){
-        CatalogoPuestos catalogoPuestos = null;
+        CatalogoPuestos catalogoPuestos;
         for (CatalogoPuestos p : listaPuestos ) {
-            if(p.getId()==id){
-                System.out.println("Puestos encontrado "+p.toString());
+            if(p.getId().equals(id)){
                 return  p;
             }
         }
-
         catalogoPuestos = dbHandlerl.getCatalogoPuestos(id);
-        System.out.println("buscar en db "+catalogoPuestos);
 
         return catalogoPuestos;
     }
@@ -330,9 +323,9 @@ public class Controlador {
         }else{
             if(catalogoPuestos.validarCamposVacios()){
                 Long i = dbHandlerl.addCatalogoPuestos(catalogoPuestos);
-                if(i!=Long.valueOf(-1)){
+                if(!i.equals((long)(-1))){
                     //catalogoPuestos.setId(i);
-                    this.listaPuestos.add(catalogoPuestos);
+                    listaPuestos.add(catalogoPuestos);
                     r = TiposError.EXITOSO;
                 }
             }else{
@@ -347,9 +340,9 @@ public class Controlador {
         TiposError r= TiposError.ERROR_DB;
 
         for (Trabajadores t: listaTrabajadores) {
-            if(t.getConsecutivo()==consecutivo){
+            if(t.getConsecutivo().equals(consecutivo)){
                 if(catalogoPuesto.getId()>1){
-                    if(t.getPuestosActual().getId() != catalogoPuesto.getId()){
+                    if(!t.getPuestosActual().getId().equals(catalogoPuesto.getId())){
                         try {
                             long cambio = horaCambio.equals("")?new Date().getTime(): Complementos.convertirStringAlong(Complementos.obtenerFechaString(new Date()),horaCambio);
                             Puestos p = dbHandlerl.getUltimoPuesto(settings.getFechaString(),t);
@@ -384,7 +377,7 @@ public class Controlador {
                                 Trabajadores tanterior = new Trabajadores(t);
                                 t.setPuestosActual(catalogoPuesto);
 
-                                Puestos p1 = new Puestos(p.getDateFin(),Long.valueOf(0),t,0,catalogoPuesto);
+                                Puestos p1 = new Puestos(p.getDateFin(),(long)0,t,0,catalogoPuesto);
                                 Long j = dbHandlerl.addPuesto(p1);
 
                                 if(j==-1){
@@ -467,27 +460,27 @@ public class Controlador {
                             of = o.getDateFin()==0?horaActual:o.getDateFin();
 
 
-                            if(o.getId()!=cambioPuesto.getId()){//no se debe de comparar el mismo puesto
+                            if(!o.getId().equals(cambioPuesto.getId())){//no se debe de comparar el mismo puesto
                                 Log.i("verificacionHora",o.toString());
                                 if(hi<=oi && hf > oi){  //hi|------|oi|------|hf|------|of
                                     //hora final nueva interviene en otro puesto
                                     respuesta = TiposError.ERROR_SELECCION_HORA;
-                                    Log.i("verificacionHora","hora final nueva interviene en otro puesto "+ hi+" <= "+oi+"=="+(hi<=oi) +" YY "+ hf +" > "+ oi+"=="+(hf>oi));
+                                    //Log.i("verificacionHora","hora final nueva interviene en otro puesto "+ hi+" <= "+oi+"=="+(hi<=oi) +" YY "+ hf +" > "+ oi+"=="+(hf>oi));
                                     break;
                                 }else if(hi<of && hf>= of){   //oi|------|hi|------|of|------|hf
                                     //hora inicial nueva interviene en otro puesto
                                     respuesta = TiposError.ERROR_SELECCION_HORA;
-                                    Log.i("verificacionHora","hora inicial nueva interviene en otro puesto "+ hi+" < "+of+"=="+(hi<of) +" YY "+ hf +" >= "+ of+"=="+(hf>=of));
+                                    //Log.i("verificacionHora","hora inicial nueva interviene en otro puesto "+ hi+" < "+of+"=="+(hi<of) +" YY "+ hf +" >= "+ of+"=="+(hf>=of));
                                     break;
                                 }else if(hi>=oi && hf<=of){//oi|------|hi|------|hf|------|of
                                     //hora inicial y final nuevas intervien en otro puesto
                                     respuesta = TiposError.ERROR_SELECCION_HORA;
-                                    Log.i("verificacionHora","hora inicial y final nuevas intervien en otro puesto "+hi+" >= "+oi+"=="+(hi>=oi) +" YY "+hf +" <= "+ of+"=="+(hf<=of));
+                                    //Log.i("verificacionHora","hora inicial y final nuevas intervien en otro puesto "+hi+" >= "+oi+"=="+(hi>=oi) +" YY "+hf +" <= "+ of+"=="+(hf<=of));
                                     break;
                                 }else if(hi<=oi && hf>=of){//hi|------|oi|------|of|------|hf
                                     //hora inicio y final nuevas afecta a otro puesto
                                     respuesta = TiposError.ERROR_SELECCION_HORA;
-                                    Log.i("verificacionHora","hora inicio y final nuevas afecta a otro puesto "+hi+"<="+oi+"=="+(hi<=oi)+" YY "+hf+">="+of+"=="+(hf>=of));
+                                    //Log.i("verificacionHora","hora inicio y final nuevas afecta a otro puesto "+hi+"<="+oi+"=="+(hi<=oi)+" YY "+hf+">="+of+"=="+(hf>=of));
                                     break;
                                 }
                             }
@@ -499,7 +492,7 @@ public class Controlador {
                         respuesta = TiposError.ERROR_SELECCION_HORA;
                     }
                 }else{
-                    Log.i("verificacionHora","hora inicio no es menor que hora final "+hi+" < "+hf + "=="+ (hi < hf ));
+                    //Log.i("verificacionHora","hora inicio no es menor que hora final "+hi+" < "+hf + "=="+ (hi < hf ));
                     respuesta = TiposError.ERROR_SELECCION_HORA;
                 }
             }
@@ -520,8 +513,7 @@ public class Controlador {
                 //cambioPuesto.setPuestosActual(cambioPuesto.getPuestos());
                 //puestoAnterio.setPuestosActual(puestoAnterio.getPuestos());
                 respuesta = updateTrabajadores(trabajador,trabajadorA);
-                trabajador = null;
-                trabajadorA = null;
+
 
 
             }else if(cambioPuesto.getDateFin()==0){
@@ -536,8 +528,7 @@ public class Controlador {
                     //cambioPuesto.setPuestosActual(cambioPuesto.getPuestos());
                     //puestoAnterio.setPuestosActual(puestoAnterio.getPuestos());
                     respuesta = updateTrabajadores(trabajador,trabajadorA);
-                    trabajador = null;
-                    trabajadorA = null;
+
 
                 }
             }else{
@@ -552,26 +543,7 @@ public class Controlador {
 
         int i = dbHandlerl.updateNombreTrabajadorPuestos(trabajadores);
 
-        TiposError respuesta = i==-1?TiposError.ERROR_DB:TiposError.EXITOSO;
-        /*ArrayList<Puestos> list = getPuestosTrabajador(trabajadores);
-        Log.i("lista",list.size()+" ");
-
-        for (Puestos p:list) {
-            if(p.getId()!=null){
-                Log.i("lista",p.toString()+" ");
-                p.setNombre(trabajadores.getNombre());
-                p.setApellidoPaterno(trabajadores.getApellidoPaterno());
-                p.setApellidoMaterno(trabajadores.getApellidoMaterno());
-
-                int i = dbHandlerl.updatePuestos(p);
-                Log.i("lista",i+" ");
-                respuesta = i==-1?TiposError.ERROR_DB:TiposError.EXITOSO;
-                if(respuesta == TiposError.ERROR_DB)
-                    break;
-            }
-        }*/
-
-        return respuesta;
+        return i==-1?TiposError.ERROR_DB:TiposError.EXITOSO;
     }
 
     public TiposError updateNombreTrabajadorProduccion(Trabajadores trabajador){
@@ -598,16 +570,14 @@ public class Controlador {
     }
 
     public CatalogoCajas getListaTamaiosCajas(Long id){
-        CatalogoCajas catalogoCajas = null;
+
         for (CatalogoCajas a : listaTamaiosCajas ) {
-            if(a.getId()==id){
+            if(a.getId().equals(id)){
                 return a;
             }
         }
 
-        catalogoCajas = dbHandlerl.getCatalogoTamaniosCajas(id);
-
-        return catalogoCajas;
+        return dbHandlerl.getCatalogoTamaniosCajas(id);
     }
 
     public CatalogoCajas getListaTamaiosCajas(int posicion){
@@ -633,10 +603,10 @@ public class Controlador {
     }
 
     public int getIndexListaTamanioCajas(CatalogoCajas catalogoCajas){
-        int index = 0;
+        int index;
 
         for (index=0;index<listaTamaiosCajas.size();index++) {
-            if(listaTamaiosCajas.get(index).getId()==catalogoCajas.getId())
+            if(listaTamaiosCajas.get(index).getId().equals(catalogoCajas.getId()))
                 break;
         }
 
@@ -648,7 +618,7 @@ public class Controlador {
         if(settings!=null) {
             if(catalogoCajas.validarCamposVacios()){
                 Long i = dbHandlerl.addCatalogoCajas(catalogoCajas);
-                if(i!=Long.valueOf(-1)){
+                if(!i.equals((long)-1)){
                     //catalogoPuestos.setId(i);
                     this.getListaTamaiosCajas().add(catalogoCajas);
                     r = TiposError.EXITOSO;
@@ -663,7 +633,7 @@ public class Controlador {
         return r;
     }
     ////////////////////////////////METODOS DE ACTIVIDADES/////////////////////////////////////
-    public ArrayList<CatalogoActividades> getListaActividades(){
+    private ArrayList<CatalogoActividades> getListaActividades(){
 
          if(listaActividades.size()==0){
              listaActividades = dbHandlerl.getCatalogoActividades();
@@ -679,9 +649,9 @@ public class Controlador {
     }
 
     public CatalogoActividades getListaActividades(Long id){
-        CatalogoActividades catalogoActividades = null;
+        CatalogoActividades catalogoActividades;
         for (CatalogoActividades a : listaActividades ) {
-            if(a.getId()==id){
+            if(a.getId().equals(id)){
                 return a;
             }
         }
@@ -714,10 +684,10 @@ public class Controlador {
     }
 
     public int getIndexListaActividad(CatalogoActividades actividades){
-        int index = 0;
+        int index;
 
         for (index=0;index<listaActividades.size();index++) {
-            if(listaActividades.get(index).getId()==actividades.getId())
+            if(listaActividades.get(index).getId().equals(actividades.getId()))
                 break;
         }
 
@@ -729,8 +699,7 @@ public class Controlador {
         if(settings!=null) {
             if(catalogoActividades.validarCamposVacios()){
                 Long i = dbHandlerl.addCatalogoActividades(catalogoActividades);
-                if(i!=Long.valueOf(-1)){
-                    //catalogoPuestos.setId(i);
+                if(!i.equals((long) -1)){
                     this.getListaActividades().add(catalogoActividades);
                     r = TiposError.EXITOSO;
                 }
@@ -745,14 +714,13 @@ public class Controlador {
     }
 
     public TiposError cambiarActividad(CatalogoActividades catalogoActividades){
-        TiposError r= TiposError.ERROR_DB;
         settings.setActividades(catalogoActividades);
-        r = updateSetting(settings);
-        return r;
+
+        return updateSetting(settings);
     }
 
     public String getActividadActual(){
-        String r= "";
+        String r;
 
         if(settings!=null)
             r = settings.getActividades().getDescripcion();
@@ -790,7 +758,7 @@ public class Controlador {
             if(trabajadores.validarCamposVacios()){
                 Long i = dbHandlerl.addTrabajadores(trabajadores);
                 Log.e("new trabajador","ya se guardo en la db "+i);
-                if(i!=Long.valueOf(-1)){
+                if(!i.equals((long)-1)){
                     Log.e("new trabajador","actualizar arraylist" +trabajadores.toString());
                     //trabajadores.setIdTrabajdor(i);
                     listaTrabajadores.add(trabajadores);//se agrega al arrayList
@@ -823,7 +791,7 @@ public class Controlador {
                 Log.i("captura",c.toString());
                 for (Trabajadores t :
                         listaTrabajadores) {
-                    if (t.getConsecutivo() == c){
+                    if (t.getConsecutivo().equals(c)){
                         r = t;
                         break;
                     }
@@ -862,7 +830,7 @@ public class Controlador {
                     if(i!=-1){
 
                         for (int index=0 ; index<listaTrabajadores.size();index++) {
-                            if(trabajadores.getIdTrabajdor()==listaTrabajadores.get(index).getIdTrabajdor()){
+                            if(trabajadores.getIdTrabajdor().equals(listaTrabajadores.get(index).getIdTrabajdor())){
                                 listaTrabajadores.set(index,trabajadores);
                                 r = TiposError.EXITOSO;
                                 break;
@@ -885,18 +853,18 @@ public class Controlador {
     }
 
     public String totalAsistencia(){
-        Integer i = listaTrabajadores.size();
+        int i = listaTrabajadores.size();
 
         for (Trabajadores t : listaTrabajadores) {
             if(t.getPuestosActual().getId()==2)
                 i--;
         }
 
-        return i.toString();
+        return Integer.toString(i);
     }
 /////////////////////////////////METODOS DE PRODUCCION//////////////////////////////
     public TiposError addProduccion(Producto produccion){
-        TiposError resultado = TiposError.EXITOSO;
+        TiposError resultado;
         if(produccion!=null){
             resultado = validarCapturaProduccion(produccion);
             Log.i("EMAIL",resultado.name());
@@ -913,7 +881,7 @@ public class Controlador {
 
     public TiposError deleteProduccion(Producto producto) {
         TiposError tiposError = TiposError.EXITOSO;
-        Boolean update = false;
+        boolean update = false;
 
         ArrayList<Producto> produccion = getRegistrosTrabajador(producto,settings.getFechaString());
 
@@ -968,7 +936,7 @@ public class Controlador {
         }else if (compare<0){
             respuesta[0] =0;
             respuesta[1] =totalQuitar-totalModificar;
-        }else if(compare>0){
+        }else{
             respuesta[0] =totalModificar- totalQuitar;
             respuesta[1] =0;
         }
@@ -976,8 +944,8 @@ public class Controlador {
         return respuesta;
     }
 
-    public ArrayList<Producto> getRegistrosTrabajador(Trabajadores trabajador,String fecha){
-        ArrayList<Producto> registros = new ArrayList<Producto>();
+    private ArrayList<Producto> getRegistrosTrabajador(Trabajadores trabajador, String fecha){
+        ArrayList<Producto> registros;
         registros = dbHandlerl.getResgistrosProduccion(trabajador,fecha);
 
         return registros;
@@ -990,7 +958,7 @@ public class Controlador {
             return null;
     }
 
-    public TiposError validarCapturaProduccion(Producto producto){
+    private TiposError validarCapturaProduccion(Producto producto){
         TiposError resultado = TiposError.EXITOSO;
 
         if(producto.getPrimera()<=0 &&producto.getSegunda()<=0 && producto.getAgranel()<=0)
@@ -999,13 +967,12 @@ public class Controlador {
         return resultado;
     }
 
-    public Producto getUltimaProduccion(Trabajadores trabajadores){
-        Producto producto = dbHandlerl.getUltimoResgistroProduccion(trabajadores,settings.getFechaString());
+    private Producto getUltimaProduccion(Trabajadores trabajadores){
 
-        return  producto;
+        return  dbHandlerl.getUltimoResgistroProduccion(trabajadores,settings.getFechaString());
     }
 
-    public TiposError validarPuestoProduccion(Trabajadores trabajadores){
+    private TiposError validarPuestoProduccion(Trabajadores trabajadores){
         TiposError resultado = TiposError.EXITOSO;
 
         if(trabajadores!=null){
@@ -1020,7 +987,7 @@ public class Controlador {
     }
 
     public TiposError validarPrecaptura(Trabajadores trabajadores,Long time){
-        TiposError resultado = TiposError.EXITOSO;
+        TiposError resultado;
 Log.i("captura",getConfiguracion().toString());
         if(trabajadores!=null){
             resultado = validarPuestoProduccion(trabajadores);
@@ -1028,7 +995,7 @@ Log.i("captura",getConfiguracion().toString());
                 Producto ultimoProducto = getUltimaProduccion(trabajadores);
 
                 if(ultimoProducto!=null){
-                    Long dif =time-ultimoProducto.getDate();
+                    long dif =time-ultimoProducto.getDate();
                     Long segundos =(dif / 1000);
                     if(dif>=0){
                         if(segundos < getConfiguracion().getTiempoMas()){
@@ -1049,17 +1016,20 @@ Log.i("captura",getConfiguracion().toString());
     public TreeMap<String,Object> getReporteDiaTrabajadores(){
         ArrayList<ReporteProduccion> reporteGeneral = dbHandlerl.getReporte(settings.getFechaString(), null);
         TreeMap<String,Object> reporte = new TreeMap<>();
-        ArrayList<ReporteCajasTotales> reporteCajas = new  ArrayList<ReporteCajasTotales>();
-        //ArrayList<ReporteCajasTotales> reporteTotal = new  ArrayList<ReporteCajasTotales>();
-        Long trabajadorActual = Long.valueOf(0);
+        ArrayList<ReporteCajasTotales> reporteCajas = new  ArrayList<>();
+        TreeMap<Long,ReporteProduccion> reporteTotal = new  TreeMap<>();
 
-        ReporteCajasTotales registro = null;
-        ReporteCajasTotales registroTotal = null;
+        Long trabajadorActual = 0L;
+        Integer totalSegunda = 0;
+
+        ReporteCajasTotales registro;
+        ReporteCajasTotales totales = null;
+        ReporteProduccion registroTotal;
+
 
         for (ReporteProduccion r : reporteGeneral) {
 
-
-            if(r.getIdTrabajdor()==trabajadorActual){
+            if(r.getIdTrabajdor().equals(trabajadorActual)){
                 registro = reporteCajas.get(reporteCajas.size()-1);
             }else{
                 registro = new ReporteCajasTotales(r);
@@ -1070,27 +1040,55 @@ Log.i("captura",getConfiguracion().toString());
             registro.setCajas(r.getCajasPrimera(),r.getCajasSegunda(),r.getCajasAgranel());
             registro.setVasquetes(r.getVazquetesPrimera(),r.getVazquetesSegunda(),r.getVazquetesAgranel());
 
-            if(registroTotal==null){
-                registroTotal = new ReporteCajasTotales(r);
+            if(!reporteTotal.containsKey(r.getActividad().getId())){
+                registroTotal = new ReporteProduccion(r);
+                registroTotal.setActividad(r.getActividad());
+                reporteTotal.put(r.getActividad().getId(),registroTotal);
+            }else {
+                registroTotal = reporteTotal.get(r.getActividad().getId());
             }
 
-            registroTotal.setCajas(r.getCajasPrimera(),r.getCajasSegunda(),r.getCajasAgranel());
-            registroTotal.setVasquetes(r.getVazquetesPrimera(),r.getVazquetesSegunda(),r.getVazquetesAgranel());
+            if (registroTotal != null) {
+                registroTotal.setTotalPrimera(registroTotal.getTotalPrimera()+r.getTotalPrimera());
+            }
+            totalSegunda = totalSegunda + r.getTotalSegunda();
+            if (registroTotal != null) {
+                registroTotal.setTotalAgranel(registroTotal.getTotalAgranel()+r.getTotalAgranel());
+            }
+
+        }
+
+        for (Long key :  reporteTotal.keySet()) {
+            ReporteProduccion rp = reporteTotal.get(key);
+            if(totales==null){
+                totales = new ReporteCajasTotales(rp);
+            }
+
+            if (rp != null) {
+                totales.setCajas(rp.getCajasPrimera(),0,rp.getCajasAgranel());
+                totales.setVasquetes(rp.getVazquetesPrimera(),0,rp.getVazquetesAgranel());
+            }
+        }
+
+        float tCajas = Controlador.getCajas(totalSegunda, 12);
+        if (totales != null) {
+            totales.setCajasSegunda((int) tCajas);
+            totales.setVasquetesSegunda(Math.round((totales.getCajasSegunda()-tCajas)*(float)12));
         }
 
         reporte.put("trabajadores",reporteCajas);
-        reporte.put("totales",registroTotal);
+        reporte.put("totales",totales);
         return reporte;
     }
 
     public  ArrayList<ReporteProduccion> getReporteDetalleTrabajador(Trabajadores trabajador){
-        ArrayList<ReporteProduccion> reporte = dbHandlerl.getReporte(settings.getFechaString(),trabajador);
-        return reporte;
+
+        return dbHandlerl.getReporte(settings.getFechaString(),trabajador);
     }
 
-    public  ArrayList<ReporteProduccion> getReporte(Long fechaInicial,Long fechaFinal){
+    private ArrayList<ReporteProduccion> getReporte(Long fechaInicial, Long fechaFinal){
         ArrayList<Trabajadores> arrayListTrabajadores = dbHandlerl.getTrabajdores();
-        ArrayList<ReporteProduccion> reporte = new ArrayList<ReporteProduccion>();
+        ArrayList<ReporteProduccion> reporte = new ArrayList<>();
 
         for (Trabajadores t : arrayListTrabajadores) {
             ArrayList<Puestos> puestosTrabajador = dbHandlerl.getPuestos(t,fechaInicial,fechaFinal);
@@ -1103,9 +1101,7 @@ Log.i("captura",getConfiguracion().toString());
                         reporte.add(produccion);
                     }
 
-                    for (ReporteProduccion rp : r) {
-                        reporte.add(rp);
-                    }
+                    reporte.addAll(r);
                 }else{
                     ReporteProduccion produccion = new ReporteProduccion(t);
                     produccion.setPuestos(p);
@@ -1119,7 +1115,7 @@ Log.i("captura",getConfiguracion().toString());
         return reporte;
     }
 
-    public static final String calcularCajas(Integer cajas, Integer vasquetes, Boolean tipoCaja){
+    public static String calcularCajas(Integer cajas, Integer vasquetes, Boolean tipoCaja){
 
         String cajasTotales = "";
         String leyendaCaja;
@@ -1153,12 +1149,13 @@ Log.i("captura",getConfiguracion().toString());
         return cajasTotales;
     }
 
-    public static final float getCajas(Integer totalVasquetes,Integer vasqetesXcajas){
+    public static float getCajas(Integer totalVasquetes, Integer vasqetesXcajas){
         return  ((float)totalVasquetes/(float)vasqetesXcajas);
     }
 
-    public TiposError enviarCorreo(String fechaInicio,String fechaFinal){
-        File file = null;
+    @SuppressLint("IntentReset")
+    public TiposError enviarCorreo(String fechaInicio, String fechaFinal){
+        File file;
         Log.i("EMAIL",fechaInicio+"----"+fechaFinal);
         TiposError error = TiposError.EXITOSO;
         if(!fechaFinal.equals("")&&!fechaInicio.equals("")){
@@ -1309,8 +1306,8 @@ Log.i("captura",getConfiguracion().toString());
 
         }
 
-        row = sheet.createRow(numeroRenglon++);
-        numeroCelda = 0;
+        //row = sheet.createRow(numeroRenglon++);
+        //numeroCelda = 0;
         try {
             //Se genera el documento
             archivoXls = new File(Complementos.rutaAlmacenamiento(this.activity).getAbsolutePath()+File.separator+"doc"+File.separator+"Produccion.xls");
@@ -1335,7 +1332,7 @@ Log.i("captura",getConfiguracion().toString());
         File storageDir = Complementos.rutaAlmacenamiento(context);
 
 
-        String name = new SimpleDateFormat("ddMMyyyy").format(Calendar.getInstance().getTime());
+        @SuppressLint("SimpleDateFormat") String name = new SimpleDateFormat("ddMMyyyy").format(Calendar.getInstance().getTime());
 
         String logFile = storageDir.getAbsolutePath() + File.separator+ "Log" + File.separator + name + ".log";
         File result = new File(logFile);

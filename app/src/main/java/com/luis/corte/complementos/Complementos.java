@@ -1,8 +1,8 @@
 package com.luis.corte.complementos;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.icu.util.Calendar;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,17 +24,17 @@ public class Complementos {
     public static final String TAG_BDHANDLER = "DBHandler";
     public static final String TAG_DIALOG_MODIFICAION_PUESTO = "DialogModificacionPuestos";
 
+    @SuppressLint("ObsoleteSdkInt")
     public  static File rutaAlmacenamiento(Context context){
         File storageDir = null;
         File[] temp2 = null;
         File temp = null;
-        File result = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             temp2 = context.getExternalMediaDirs();
         }else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 temp2 = context.getExternalFilesDirs("");
-            }else{
+            } else{
                 temp = context.getExternalFilesDir("");
                 if(temp == null)
                     temp = context.getDatabasePath("");
@@ -56,7 +56,7 @@ public class Complementos {
         return storageDir;
     }
 
-    public static final int getIndex(Spinner spinner, String myString){
+    public static int getIndex(Spinner spinner, String myString){
         for (int i=0;i<spinner.getCount();i++){
             if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
                 return i;
@@ -67,7 +67,7 @@ public class Complementos {
     }
 
 
-    public static final void mensajesError(Activity activity, Controlador.TiposError tiposError){
+    public static void mensajesError(Activity activity, Controlador.TiposError tiposError){
 
         Log.e("MSN",tiposError.name());
         if(tiposError == Controlador.TiposError.ERROR_DB){
@@ -76,10 +76,6 @@ public class Complementos {
             t.show();
         }else if (tiposError == Controlador.TiposError.ERROR_SETTING_NULL){
             Toast t = Toast.makeText(activity, "ERRROR SETTING VACIO" , Toast.LENGTH_LONG);
-            t.setGravity(Gravity.CENTER,0,0);
-            t.show();
-        }else if(tiposError == Controlador.TiposError.ERROR_CAMPOS_VACIOS){
-            Toast t = Toast.makeText(activity, "ERROR CAMPO VACIOS" , Toast.LENGTH_LONG);
             t.setGravity(Gravity.CENTER,0,0);
             t.show();
         }else if(tiposError == Controlador.TiposError.ERROR_SIN_TRABAJADORES){
@@ -149,9 +145,8 @@ public class Complementos {
     }
 
     public static Long convertirStringAlong(String fecha,String hora) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSSS");
-        Long time = (sdf.parse(fecha+" "+hora)).getTime();
-        return time;
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSSS");
+        return (sdf.parse(fecha+" "+hora)).getTime();
     }
 /*
     public static Long convertirStringSegundosAlong(String fecha,String hora) throws ParseException {
@@ -160,10 +155,14 @@ public class Complementos {
         return time;
     }*/
 
+    /***
+     * obtener la fecha en formato dd/MM/yyyy
+     * @param fecha tipo date
+     * @return string con el ofrmato de fecha
+     */
     public static String obtenerFechaString(Date fecha){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String f = sdf.format(fecha);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        return f;
+        return sdf.format(fecha);
     }
 }

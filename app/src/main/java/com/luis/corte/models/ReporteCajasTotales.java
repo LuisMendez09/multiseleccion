@@ -1,6 +1,8 @@
 package com.luis.corte.models;
 
 
+import org.jetbrains.annotations.NotNull;
+
 public class ReporteCajasTotales extends  Trabajadores{
     private Integer cajasPrimera=0;
     private Integer vasquetesPrimera=0;
@@ -52,8 +54,17 @@ public class ReporteCajasTotales extends  Trabajadores{
         return vasquetesAgranel;
     }
 
+    public void setCajasSegunda(Integer cajasSegunda) {
+        this.cajasSegunda = cajasSegunda;
+    }
+
+    public void setVasquetesSegunda(Integer vasquetesSegunda) {
+        this.vasquetesSegunda = vasquetesSegunda;
+    }
+
     /***********************************************************/
 
+    @NotNull
     @Override
     public String toString() {
         return "ReporteCajasTotales{" +
