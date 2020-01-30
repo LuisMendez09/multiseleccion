@@ -149,6 +149,7 @@ public class CapturaDialogDialog {
                 (viewDialog.findViewById(R.id.lb_puesto_add)).setVisibility(View.INVISIBLE);
             }
         }else{
+            if(this.controlador.getListaPuestos().size()>3)
             sp_puesto.setSelection(12);
         }
 
