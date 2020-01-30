@@ -3,9 +3,7 @@ package com.luis.corte.views.dialogForm;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -46,9 +43,6 @@ public class CapturaDialogDialog {
     private EditText et_descripcionTamanioCajas;
     private EditText et_CantindadTamanioCajas;
 
-    private TextView tvTrabajador;
-    private TextView tvConsecutivo;
-    private TextView tvPuestoActual;
     private TimePicker horaCambio;
 
     private EditText capturaNumeroTrabajador;
@@ -71,8 +65,6 @@ public class CapturaDialogDialog {
         DIALOG_ENVIAR_CORREO,
     }
 
-    private InterfaceDialogs DialogListener;
-
     public CapturaDialogDialog(Controlador controlador, final InterfaceDialogs respuestaDialogListener, Object datos, tiposDialogos tiposDialogo){
         //super(controlador.getActivity());
         iniciarliarDialog(controlador,respuestaDialogListener,datos,tiposDialogo,null);
@@ -83,7 +75,6 @@ public class CapturaDialogDialog {
     }
 
     private void iniciarliarDialog(Controlador controlador, final InterfaceDialogs respuestaDialogListener, Object datos, tiposDialogos tiposDialogo, Boolean addProduccion){
-        this.DialogListener = respuestaDialogListener;
         this.controlador = controlador;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(controlador.getActivity(),R.style.AlerDialogCustom);
@@ -103,7 +94,7 @@ public class CapturaDialogDialog {
         }else if(tiposDialogo == tiposDialogos.DIALOG_ADD_TAMANIO_CAJAS){
             dialog = dialogoCapturaTamanioCajas(layoutInflater,builder,respuestaDialogListener);
         }else if(tiposDialogo == tiposDialogos.DIALOG_SELECCION_ACTIVIDAD){
-            dialog = dialogoSeleccionActividades(layoutInflater,builder,respuestaDialogListener);
+            dialog = dialogoSeleccionActividades(builder,respuestaDialogListener);
         }else if(tiposDialogo == tiposDialogos.DIALOG_CAMBIO_PUESTO){
             dialog = dialogoCapturaCambioPuesto(layoutInflater,builder,respuestaDialogListener,(Trabajadores) datos);
         }else if(tiposDialogo == tiposDialogos.DIALOG_CAPTURA_NUMERO_TRABAJADOR){
@@ -283,7 +274,7 @@ public class CapturaDialogDialog {
         return builder.create();
     }
 
-    private AlertDialog dialogoSeleccionActividades(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
+    private AlertDialog dialogoSeleccionActividades(AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
         //View viewDialog = layoutInflater.inflate(R.layout.dialog_add_actividades,null);
         final CharSequence[] selectedItems = controlador.getListaActividadesArray();  // Where we track the selected items
 
@@ -357,11 +348,8 @@ public class CapturaDialogDialog {
                         dialogInterface.dismiss();
                     }
                 });
-        final AlertDialog dialog = builder.create();
-        ListView listView = dialog.getListView();
-        /*if(listView!=null)
-            listView.setColor(controlador.getActivity().getResources().getColor(R.color.colorFontDark));*/
-        return dialog;
+
+        return builder.create();
     }
 
     @SuppressLint("SetTextI18n")
@@ -369,10 +357,9 @@ public class CapturaDialogDialog {
         @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_cambio_puesto,null);
 
 
-
-        tvTrabajador =  viewDialog.findViewById(R.id.tv_nombre);
-        tvConsecutivo =  viewDialog.findViewById(R.id.tv_numero);
-        tvPuestoActual =  viewDialog.findViewById(R.id.tv_puesto);
+        TextView tvTrabajador = viewDialog.findViewById(R.id.tv_nombre);
+        TextView tvConsecutivo = viewDialog.findViewById(R.id.tv_numero);
+        TextView tvPuestoActual = viewDialog.findViewById(R.id.tv_puesto);
         sp_puesto =  viewDialog.findViewById(R.id.sp_puesto);
         horaCambio =   viewDialog.findViewById(R.id.tp_horaCambio);
         horaCambio.setIs24HourView(true);
