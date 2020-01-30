@@ -1,5 +1,6 @@
 package com.luis.corte.views.dialogForm;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -34,28 +35,28 @@ import java.util.Calendar;
 
 public class CapturaDialogDialog {
 
-    EditText et_nombre;
-    EditText et_apellidoPaterno;
-    EditText et_apellidoMaterno;
-    Spinner sp_puesto;
-    EditText et_descripcionPuestos;
-    EditText et_descripcionActividad;
-    public int indexActividad;
-    Spinner sp_tamanioCajas;
-    EditText et_descripcionTamanioCajas;
-    EditText et_CantindadTamanioCajas;
+    private EditText et_nombre;
+    private EditText et_apellidoPaterno;
+    private EditText et_apellidoMaterno;
+    private Spinner sp_puesto;
+    private EditText et_descripcionPuestos;
+    private EditText et_descripcionActividad;
+    private int indexActividad;
+    private Spinner sp_tamanioCajas;
+    private EditText et_descripcionTamanioCajas;
+    private EditText et_CantindadTamanioCajas;
 
-    TextView tvTrabajador;
-    TextView tvConsecutivo;
-    TextView tvPuestoActual;
-    TimePicker horaCambio;
+    private TextView tvTrabajador;
+    private TextView tvConsecutivo;
+    private TextView tvPuestoActual;
+    private TimePicker horaCambio;
 
-    EditText capturaNumeroTrabajador;
+    private EditText capturaNumeroTrabajador;
 
 
-    Controlador controlador;
+    private Controlador controlador;
 
-    public static  enum tiposDialogos {
+    public enum tiposDialogos {
         DIALOG_ADD_PUESTOS,
         DIALOG_ADD_TRABAJADOR,
         DIALOG_ADD_ACTIVIDADES,
@@ -68,7 +69,7 @@ public class CapturaDialogDialog {
         DIALOG_FINALIZAR_JORNADA,
         DIALOG_CONFIGURACION,
         DIALOG_ENVIAR_CORREO,
-    };
+    }
 
     private InterfaceDialogs DialogListener;
 
@@ -94,7 +95,7 @@ public class CapturaDialogDialog {
         if(tiposDialogo == tiposDialogos.DIALOG_ADD_PUESTOS){
             dialog = dialogoCapturaPuestos(layoutInflater,builder,respuestaDialogListener);
         }else if (tiposDialogo == tiposDialogos.DIALOG_ADD_TRABAJADOR){
-            dialog = dialogoCapturaCapturaTrabajadores(layoutInflater,builder,respuestaDialogListener,(Trabajadores) datos);
+            dialog = dialogoCapturaTrabajadores(layoutInflater,builder,respuestaDialogListener,(Trabajadores) datos);
         }else if(tiposDialogo == tiposDialogos.DIALOG_ADD_ACTIVIDADES){
             dialog = dialogoCapturaActividades(layoutInflater,builder,respuestaDialogListener);
         }else if(tiposDialogo == tiposDialogos.DIALOG_CAMBIO_ACTIVIDAD){
@@ -132,30 +133,32 @@ public class CapturaDialogDialog {
 
     }
 
-    private AlertDialog dialogoCapturaCapturaTrabajadores(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener, final Trabajadores trabajadores) {
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_add_trabajador,null);
+    private AlertDialog dialogoCapturaTrabajadores(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener, final Trabajadores trabajadores) {
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_add_trabajador,null);
 
 
-        et_nombre = (EditText) viewDialog.findViewById(R.id.etNombre);
-        et_apellidoPaterno = (EditText) viewDialog.findViewById(R.id.etApellidoPaterno);
-        et_apellidoMaterno = (EditText) viewDialog.findViewById(R.id.etApellidoMaterno);
+        et_nombre = viewDialog.findViewById(R.id.etNombre);
+        et_apellidoPaterno = viewDialog.findViewById(R.id.etApellidoPaterno);
+        et_apellidoMaterno = viewDialog.findViewById(R.id.etApellidoMaterno);
 
-        sp_puesto = (Spinner) viewDialog.findViewById(R.id.spPuesto);
+        sp_puesto = viewDialog.findViewById(R.id.spPuesto);
         ArrayList<CatalogoPuestos> categoriasArrayList = controlador.getListaPuestos();
-        ArrayAdapter<CatalogoPuestos> categoriasArrayAdapter = new ArrayAdapter<CatalogoPuestos>(controlador.getActivity(),R.layout.support_simple_spinner_dropdown_item,categoriasArrayList);
+        ArrayAdapter<CatalogoPuestos> categoriasArrayAdapter = new ArrayAdapter<>(controlador.getActivity(),R.layout.support_simple_spinner_dropdown_item,categoriasArrayList);
         sp_puesto.setAdapter(categoriasArrayAdapter);
 
         if(trabajadores !=null){
 
-            et_nombre.setText(trabajadores.getNombre().toString());
-            et_apellidoPaterno.setText(trabajadores.getApellidoPaterno().toString());
-            et_apellidoMaterno.setText(trabajadores.getApellidoMaterno().toString());
+            et_nombre.setText(trabajadores.getNombre());
+            et_apellidoPaterno.setText(trabajadores.getApellidoPaterno());
+            et_apellidoMaterno.setText(trabajadores.getApellidoMaterno());
             sp_puesto.setSelection(Complementos.getIndex(sp_puesto,trabajadores.getPuestosActual().getDescripcion()));
 
             if(!controlador.getActivity().getComponentName().getClassName().equals(MainActivity.class.getName())){
                 sp_puesto.setVisibility(View.INVISIBLE);
-                ((TextView) viewDialog.findViewById(R.id.lb_puesto_add)).setVisibility(View.INVISIBLE);
+                (viewDialog.findViewById(R.id.lb_puesto_add)).setVisibility(View.INVISIBLE);
             }
+        }else{
+            sp_puesto.setSelection(12);
         }
 
         builder.setView(viewDialog)
@@ -182,14 +185,13 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+        return builder.create();
     }
 
     private AlertDialog dialogoCapturaPuestos(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_add_puestos,null);
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_add_puestos,null);
 
-        et_descripcionPuestos = (EditText) viewDialog.findViewById(R.id.dtv_descripcionPuestos);
+        et_descripcionPuestos =viewDialog.findViewById(R.id.dtv_descripcionPuestos);
 
         builder.setView(viewDialog)
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
@@ -212,18 +214,18 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+
+        return builder.create();
     }
 
     private AlertDialog dialogoCapturaActividades(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_add_actividades,null);
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_add_actividades,null);
 
-        et_descripcionActividad = (EditText) viewDialog.findViewById(R.id.dtv_actividad);
-        sp_tamanioCajas = (Spinner) viewDialog.findViewById(R.id.sp_tamanioCajas);
+        et_descripcionActividad = viewDialog.findViewById(R.id.dtv_actividad);
+        sp_tamanioCajas = viewDialog.findViewById(R.id.sp_tamanioCajas);
 
         ArrayList<CatalogoCajas> categoriasArrayList = controlador.getListaTamaiosCajas();
-        ArrayAdapter<CatalogoCajas> categoriasArrayAdapter = new ArrayAdapter<CatalogoCajas>(controlador.getActivity(),R.layout.support_simple_spinner_dropdown_item,categoriasArrayList);
+        ArrayAdapter<CatalogoCajas> categoriasArrayAdapter = new ArrayAdapter<>(controlador.getActivity(),R.layout.support_simple_spinner_dropdown_item,categoriasArrayList);
         sp_tamanioCajas.setAdapter(categoriasArrayAdapter);
 
         builder.setView(viewDialog)
@@ -247,15 +249,15 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+
+        return builder.create();
     }
 
     private AlertDialog dialogoCapturaTamanioCajas(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_add_tamanio_cajas,null);
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_add_tamanio_cajas,null);
 
-        et_descripcionTamanioCajas = (EditText) viewDialog.findViewById(R.id.tv_descripcion_caja);
-        et_CantindadTamanioCajas = (EditText) viewDialog.findViewById(R.id.tv_cantidad_cajas);
+        et_descripcionTamanioCajas =  viewDialog.findViewById(R.id.tv_descripcion_caja);
+        et_CantindadTamanioCajas =  viewDialog.findViewById(R.id.tv_cantidad_cajas);
 
         builder.setView(viewDialog)
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
@@ -277,8 +279,8 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+
+        return builder.create();
     }
 
     private AlertDialog dialogoSeleccionActividades(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
@@ -319,8 +321,8 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+
+        return builder.create();
     }
 
     private AlertDialog dialogoCambioActividades(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
@@ -362,20 +364,21 @@ public class CapturaDialogDialog {
         return dialog;
     }
 
+    @SuppressLint("SetTextI18n")
     private AlertDialog dialogoCapturaCambioPuesto(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener, final Trabajadores trabajadores) {
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_cambio_puesto,null);
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_cambio_puesto,null);
 
 
 
-        tvTrabajador = (TextView) viewDialog.findViewById(R.id.tv_nombre);
-        tvConsecutivo = (TextView) viewDialog.findViewById(R.id.tv_numero);
-        tvPuestoActual = (TextView) viewDialog.findViewById(R.id.tv_puesto);
-        sp_puesto = (Spinner) viewDialog.findViewById(R.id.sp_puesto);
-        horaCambio = (TimePicker)  viewDialog.findViewById(R.id.tp_horaCambio);
+        tvTrabajador =  viewDialog.findViewById(R.id.tv_nombre);
+        tvConsecutivo =  viewDialog.findViewById(R.id.tv_numero);
+        tvPuestoActual =  viewDialog.findViewById(R.id.tv_puesto);
+        sp_puesto =  viewDialog.findViewById(R.id.sp_puesto);
+        horaCambio =   viewDialog.findViewById(R.id.tp_horaCambio);
         horaCambio.setIs24HourView(true);
 
         ArrayList<CatalogoPuestos> categoriasArrayList = controlador.getListaPuestos();
-        ArrayAdapter<CatalogoPuestos> categoriasArrayAdapter = new ArrayAdapter<CatalogoPuestos>(controlador.getActivity(),R.layout.support_simple_spinner_dropdown_item,categoriasArrayList);
+        ArrayAdapter<CatalogoPuestos> categoriasArrayAdapter = new ArrayAdapter<>(controlador.getActivity(),R.layout.support_simple_spinner_dropdown_item,categoriasArrayList);
         sp_puesto.setAdapter(categoriasArrayAdapter);
 
         tvTrabajador.setText(trabajadores.getTrabajador());
@@ -387,7 +390,7 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String hora = null;
+                        String hora;
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                             hora = horaCambio.getHour()+":"+horaCambio.getMinute()+":"+ Calendar.getInstance().get(Calendar.SECOND);
                         }else{
@@ -404,14 +407,14 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+
+        return builder.create();
     }
 
     private AlertDialog dialogoCapturaNumeroTrabajador(final LayoutInflater layoutInflater,final AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener) {
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_numero_captura,null);
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_numero_captura,null);
 
-        capturaNumeroTrabajador = (EditText) viewDialog.findViewById(R.id.et_dialog_numero_trabajador);
+        capturaNumeroTrabajador =  viewDialog.findViewById(R.id.et_dialog_numero_trabajador);
 
 
         builder.setView(viewDialog)
@@ -445,18 +448,19 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+
+        return builder.create();
     }
 
+    @SuppressLint("SetTextI18n")
     private AlertDialog dialogoCapturaProduccion(final LayoutInflater layoutInflater, final AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener, final Trabajadores trabajador, final Boolean addProduccion) {
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_captura_produccion,null);
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_captura_produccion,null);
 
-        TextView tvNombreTrabajador = (TextView) viewDialog.findViewById(R.id.lb_nombreTrabajador_produccion);
-        TextView tvConsecutivo = (TextView) viewDialog.findViewById(R.id.lb_consecutivo_produccion);
-        final EditText etPrimera = (EditText) viewDialog.findViewById(R.id.et_primera_produccion);
-        final EditText etSegunda = (EditText) viewDialog.findViewById(R.id.et_segunda_produccion);
-        final EditText etAgranel = (EditText) viewDialog.findViewById(R.id.et_agranel_produccion);
+        TextView tvNombreTrabajador =  viewDialog.findViewById(R.id.lb_nombreTrabajador_produccion);
+        TextView tvConsecutivo =  viewDialog.findViewById(R.id.lb_consecutivo_produccion);
+        final EditText etPrimera =  viewDialog.findViewById(R.id.et_primera_produccion);
+        final EditText etSegunda =  viewDialog.findViewById(R.id.et_segunda_produccion);
+        final EditText etAgranel =  viewDialog.findViewById(R.id.et_agranel_produccion);
 
         tvNombreTrabajador.setText(trabajador.getTrabajador());
         tvConsecutivo.setText("Consecutivo: "+trabajador.getConsecutivo());
@@ -485,18 +489,11 @@ public class CapturaDialogDialog {
                     }
                 });
 
-
-
-        final AlertDialog dialog = builder.create();
-
-        return dialog;
+        return builder.create();
     }
 
     private AlertDialog dialogoFinalizarJornada(final LayoutInflater layoutInflater,final AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener) {
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_finalizar_jormada,null);
-
-        //capturaNumeroTrabajador = (EditText) viewDialog.findViewById(R.id.et_dialog_numero_trabajador);
-
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_finalizar_jormada,null);
 
         builder.setView(viewDialog)
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
@@ -513,18 +510,19 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+
+        return builder.create();
     }
 
-    private AlertDialog dialogoConfiguracion(final LayoutInflater layoutInflater,final AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener) {
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_configuracion_app,null);
+    @SuppressLint("SetTextI18n")
+    private AlertDialog dialogoConfiguracion(final LayoutInflater layoutInflater, final AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener) {
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_configuracion_app,null);
 
-        final EditText etPara = (EditText) viewDialog.findViewById(R.id.et_para);
-        final EditText etcc = (EditText) viewDialog.findViewById(R.id.et_conCopia);
-        final EditText etAsunto = (EditText) viewDialog.findViewById(R.id.et_asunto);
-        final EditText etMensaje = (EditText) viewDialog.findViewById(R.id.et_mensaje);
-        final EditText etTiempoCaptura = (EditText) viewDialog.findViewById(R.id.et_tiempoMas);
+        final EditText etPara =  viewDialog.findViewById(R.id.et_para);
+        final EditText etcc =  viewDialog.findViewById(R.id.et_conCopia);
+        final EditText etAsunto =  viewDialog.findViewById(R.id.et_asunto);
+        final EditText etMensaje =  viewDialog.findViewById(R.id.et_mensaje);
+        final EditText etTiempoCaptura =  viewDialog.findViewById(R.id.et_tiempoMas);
 
         final Configuracion configuracionAnterior = controlador.getConfiguracion();
 
@@ -540,7 +538,7 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Configuracion configuracion = null;
+                        Configuracion configuracion;
                         if(configuracionAnterior!=null)
                             configuracion = new Configuracion(configuracionAnterior.getId(),configuracionAnterior.getUrlApi(),etPara.getText().toString(),etcc.getText().toString(),etAsunto.getText().toString(),etMensaje.getText().toString(),Integer.parseInt(etTiempoCaptura.getText().toString()),configuracionAnterior.getTiempoMenos());
                        else{
@@ -557,15 +555,15 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+
+        return builder.create();
     }
 
     private AlertDialog dialogoCorreo(final LayoutInflater layoutInflater,final AlertDialog.Builder builder) {
-        View viewDialog = layoutInflater.inflate(R.layout.dialog_enviar_email,null);
+        @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_enviar_email,null);
 
-        final TextView tvFechaInicio = (TextView) viewDialog.findViewById(R.id.tv_fecha_inicial_mail);
-        final TextView tvFechaFinal = (TextView) viewDialog.findViewById(R.id.tv_fecha_final_mail);
+        final TextView tvFechaInicio =  viewDialog.findViewById(R.id.tv_fecha_inicial_mail);
+        final TextView tvFechaFinal =  viewDialog.findViewById(R.id.tv_fecha_final_mail);
 
         tvFechaInicio.setText(Complementos.obtenerFechaString(Complementos.getDateActual()));
         tvFechaFinal.setText(Complementos.obtenerFechaString(Complementos.getDateActual()));
@@ -600,11 +598,10 @@ public class CapturaDialogDialog {
                     }
                 });
 
-        final AlertDialog dialog = builder.create();
-        return dialog;
+        return builder.create();
     }
 
-    public void getFecha(final TextView textView){
+    private void getFecha(final TextView textView){
         // Get Current Date
         int mYear, mMonth, mDay;
         final Calendar c = Calendar.getInstance();
@@ -615,6 +612,7 @@ public class CapturaDialogDialog {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(controlador.getActivity(),
                 new DatePickerDialog.OnDateSetListener() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
