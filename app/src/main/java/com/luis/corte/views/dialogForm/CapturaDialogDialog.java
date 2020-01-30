@@ -99,7 +99,7 @@ public class CapturaDialogDialog {
         }else if(tiposDialogo == tiposDialogos.DIALOG_ADD_ACTIVIDADES){
             dialog = dialogoCapturaActividades(layoutInflater,builder,respuestaDialogListener);
         }else if(tiposDialogo == tiposDialogos.DIALOG_CAMBIO_ACTIVIDAD){
-            dialog = dialogoCambioActividades(layoutInflater,builder,respuestaDialogListener);
+            dialog = dialogoCambioActividades(builder,respuestaDialogListener);
         }else if(tiposDialogo == tiposDialogos.DIALOG_ADD_TAMANIO_CAJAS){
             dialog = dialogoCapturaTamanioCajas(layoutInflater,builder,respuestaDialogListener);
         }else if(tiposDialogo == tiposDialogos.DIALOG_SELECCION_ACTIVIDAD){
@@ -325,7 +325,7 @@ public class CapturaDialogDialog {
         return builder.create();
     }
 
-    private AlertDialog dialogoCambioActividades(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
+    private AlertDialog dialogoCambioActividades(AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
         //View viewDialog = layoutInflater.inflate(R.layout.dialog_add_actividades,null);
         final CharSequence[] selectedItems = controlador.getListaActividadesArray();  // Where we track the selected items
         CatalogoActividades actividades = controlador.getSetting().getActividades();
