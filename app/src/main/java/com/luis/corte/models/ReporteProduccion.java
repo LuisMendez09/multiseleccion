@@ -105,7 +105,7 @@ public class ReporteProduccion extends Trabajadores {
         float t = Controlador.getCajas(this.totalSegunda,12);
         float r = (t-c)*(float)12;
 
-        return (int)r;
+        return Math.round(r);
     }
 
     public int getVazquetesAgranel() {
@@ -113,7 +113,7 @@ public class ReporteProduccion extends Trabajadores {
         float t = Controlador.getCajas(this.totalAgranel,1);
         float r = (t-c)*(float)1;
 
-        return (int)r;
+        return Math.round(r);
     }
 
     public Object [] getArray(){
