@@ -1073,7 +1073,7 @@ Log.i("captura",getConfiguracion().toString());
         float tCajas = Controlador.getCajas(totalSegunda, 12);
         if (totales != null) {
             totales.setCajasSegunda((int) tCajas);
-            totales.setVasquetesSegunda(Math.round((totales.getCajasSegunda()-tCajas)*(float)12));
+            totales.setVasquetesSegunda(Math.round((tCajas-totales.getCajasSegunda())*(float)12));
         }
 
         reporte.put("trabajadores",reporteCajas);

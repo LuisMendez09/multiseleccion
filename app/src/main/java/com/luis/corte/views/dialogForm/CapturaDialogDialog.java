@@ -138,7 +138,6 @@ public class CapturaDialogDialog {
         sp_puesto.setAdapter(categoriasArrayAdapter);
 
         if(trabajadores !=null){
-
             et_nombre.setText(trabajadores.getNombre());
             et_apellidoPaterno.setText(trabajadores.getApellidoPaterno());
             et_apellidoMaterno.setText(trabajadores.getApellidoMaterno());
@@ -150,7 +149,7 @@ public class CapturaDialogDialog {
             }
         }else{
             if(this.controlador.getListaPuestos().size()>3)
-            sp_puesto.setSelection(12);
+                sp_puesto.setSelection(2);
         }
 
         builder.setView(viewDialog)
