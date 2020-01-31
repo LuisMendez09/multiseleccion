@@ -109,6 +109,8 @@ public class CapturaDialogDialog {
             dialog = dialogoCorreo(layoutInflater,builder);
         }
 
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
 
         if(dialog!=null){
             dialog.show();
@@ -379,7 +381,7 @@ public class CapturaDialogDialog {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String hora;
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                            hora = horaCambio.getHour()+":"+horaCambio.getMinute()+":"+ Calendar.getInstance().get(Calendar.SECOND);
+                            hora = horaCambio.getHour()+":"+horaCambio.getMinute()+":"+ Calendar.getInstance().get(Calendar.SECOND)+":0000";
                         }else{
                             hora = horaCambio.getCurrentHour()+":"+horaCambio.getCurrentMinute()+":"+ Calendar.getInstance().get(Calendar.SECOND)+":"+Calendar.getInstance().get(Calendar.MILLISECOND);
                         }
@@ -413,6 +415,8 @@ public class CapturaDialogDialog {
 
                         if(t!=null){
                             AlertDialog dialog = dialogoCapturaCambioPuesto(layoutInflater, builder, respuestaDialogListener, t);
+                            dialog.setCancelable(false);
+                            dialog.setCanceledOnTouchOutside(false);
                             if(dialog!=null){
                                 dialog.show();
 
@@ -619,5 +623,6 @@ public class CapturaDialogDialog {
 
     }
 }
+
 
 

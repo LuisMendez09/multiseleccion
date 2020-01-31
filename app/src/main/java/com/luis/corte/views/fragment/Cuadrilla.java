@@ -68,7 +68,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(controlador.validarInicioSesion()!= Controlador.TiposError.SESION_FINALIZADA){
+                if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     new CapturaDialogDialog(controlador, Cuadrilla.this, null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TRABAJADOR);
                 }else{
                     Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);
@@ -94,7 +94,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
 
     public void actualizarLista(){
         adaptadorTrabajadores.notifyDataSetChanged();
-        tvAsistencia.setText(controlador.totalAsistencia());
+        tvAsistencia.setText("Asistencia: "+controlador.totalAsistencia());
     }
 
 
@@ -117,7 +117,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
     public void onDialogPositiveClickCapturaTrabajadores(Trabajadores trabajadores, Trabajadores trabajadorAnterior) {
         adaptadorTrabajadores.add(trabajadores);
         adaptadorTrabajadores.notifyDataSetChanged();
-        tvAsistencia.setText(String.valueOf(adaptadorTrabajadores.getCount()));
+        tvAsistencia.setText("Asistencia: "+controlador.totalAsistencia());
     }
 
     @Override

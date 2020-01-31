@@ -2,6 +2,7 @@ package com.luis.corte.views.adaptadores;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -117,7 +118,8 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
 
             switch (item.getTitle().toString()){
                 case "EDITAR TRABAJADOR":
-                    if(controlador.validarInicioSesion()!= Controlador.TiposError.SESION_FINALIZADA){
+                    Controlador.TiposError tiposError = controlador.validarInicioSesion();
+                    if(tiposError== Controlador.TiposError.SESION_INICIADA || tiposError== Controlador.TiposError.SESION_REINIADA){
                         new CapturaDialogDialog(controlador, ListaTrabajadorAdapter.this,trabajadores, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TRABAJADOR);
                     }else{
                         Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);

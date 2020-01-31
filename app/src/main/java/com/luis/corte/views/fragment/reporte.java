@@ -3,10 +3,12 @@ package com.luis.corte.views.fragment;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ public class reporte extends Fragment {
     private TextView tvTotalSegunda;
     private TextView tvTotalAgranel;
     private ListView lvReporte;
+    private LinearLayout llTotalProduccion;
     private ListaReporteAdapter adapter;
     private Controlador controlador;
 
@@ -40,10 +43,11 @@ public class reporte extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_reporte, container, false);
-        this.tvTotalPrimera = (TextView) view.findViewById(R.id.tv_totalPrimera_reporte);
-        this.tvTotalSegunda = (TextView) view.findViewById(R.id.tv_totalSegunda_reporte);
-        this.tvTotalAgranel = (TextView) view.findViewById(R.id.tv_totalAgranel_reporte);
-        this.lvReporte = (ListView) view.findViewById(R.id.lv_reporte);
+        this.tvTotalPrimera =  view.findViewById(R.id.tv_totalPrimera_reporte);
+        this.tvTotalSegunda =  view.findViewById(R.id.tv_totalSegunda_reporte);
+        this.tvTotalAgranel =  view.findViewById(R.id.tv_totalAgranel_reporte);
+        this.lvReporte =  view.findViewById(R.id.lv_reporte);
+        this.llTotalProduccion = view.findViewById(R.id.ll_TotalProduccion);
 
         TreeMap<String, Object> reporteDiaTrabajadores = controlador.getReporteDiaTrabajadores();
         ReporteCajasTotales t = (ReporteCajasTotales) reporteDiaTrabajadores.get("totales");
@@ -65,6 +69,16 @@ public class reporte extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 DialogDetalleProduccion detalleProduccion = new DialogDetalleProduccion(controlador.getActivity());
                 detalleProduccion.setControlador(reporte.this.controlador,adapter.getItem(position));
+                detalleProduccion.show();
+            }
+        });
+
+        this.llTotalProduccion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("totales","precion en el total");
+                DialogDetalleProduccion detalleProduccion = new DialogDetalleProduccion(controlador.getActivity());
+                detalleProduccion.setControlador(reporte.this.controlador,null);
                 detalleProduccion.show();
             }
         });

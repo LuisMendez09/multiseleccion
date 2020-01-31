@@ -31,13 +31,24 @@ public class DialogDetalleProduccion extends AlertDialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_detalle_produccion);
-        tvTrabajador = (TextView) findViewById(R.id.tv_trabajador_detalleReporte);
-        tvConsecutivo = (TextView) findViewById(R.id.tv_consecutivo_detalleReporte);
-        lvDetalleProduccion = (ListView) findViewById(R.id.lv_detalle_detalleReporte);
-        this.btn_salir = (Button) findViewById(R.id.btn_salir_dialog);
+        setCancelable(false);
+        setCanceledOnTouchOutside(false);
 
-        tvTrabajador.setText(trabajador.getTrabajador());
-        tvConsecutivo.setText("Consecutivo: "+trabajador.getConsecutivo());
+
+        tvTrabajador =  findViewById(R.id.tv_trabajador_detalleReporte);
+        tvConsecutivo =  findViewById(R.id.tv_consecutivo_detalleReporte);
+        lvDetalleProduccion =  findViewById(R.id.lv_detalle_detalleReporte);
+        this.btn_salir =  findViewById(R.id.btn_salir_dialog);
+
+
+        if(this.trabajador!=null){
+            tvTrabajador.setText(trabajador.getTrabajador());
+            tvConsecutivo.setText("Consecutivo: "+trabajador.getConsecutivo());
+        }else{
+            tvTrabajador.setText("TOTAL PRODUCCION");
+            tvConsecutivo.setText("");
+        }
+
 
         ListaReporteDetalleAdapter adapter = new ListaReporteDetalleAdapter(context,controlador.getReporteDetalleTrabajador(trabajador));
         lvDetalleProduccion.setAdapter(adapter);

@@ -55,6 +55,9 @@ public class DialogModificacionPuestos extends AlertDialog {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.dialog_editar_puestos);
+        setCancelable(false);
+        setCanceledOnTouchOutside(false);
+
         lb_nombre = (TextView) findViewById(R.id.lb_nombreTrabajador_EditPuesto);
         lb_consecutivo = (TextView) findViewById(R.id.lb_consecutivo_EditPuesto);
         sp_puesto = (Spinner) findViewById(R.id.sp_puesto_EditPuesto);
@@ -116,8 +119,9 @@ public class DialogModificacionPuestos extends AlertDialog {
     private void guardar(){
         try {
             Puestos cambioPuestos = new Puestos(this.puestos.getId(),this.puestos.getDateInicio(),this.puestos.getDateFin(),this.puestos.getTrabajadorObjec(),this.puestos.getEnviado(),this.puestos.getPuestos());
-            cambioPuestos.setPuestos((CatalogoPuestos) this.sp_puesto.getSelectedItem());
 
+            Log.i("verificacionHora",cambioPuestos.getFechaString()+" "+tv_horaInicio.getText().toString());
+            cambioPuestos.setPuestos((CatalogoPuestos) this.sp_puesto.getSelectedItem());
             cambioPuestos.setDateInicio(Complementos.convertirStringAlong(cambioPuestos.getFechaString(),tv_horaInicio.getText().toString()));
             cambioPuestos.setDateFin(tv_horaFinal.getText().toString().equals("")?0:Complementos.convertirStringAlong(cambioPuestos.getFechaString(),tv_horaFinal.getText().toString()));
 

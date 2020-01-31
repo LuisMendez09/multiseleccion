@@ -80,21 +80,21 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
                 new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TAMANIO_CAJAS);
                 break;
             case R.id.action_CambiarActividad:
-                if(controlador.validarInicioSesion()!= Controlador.TiposError.SESION_FINALIZADA){
+                if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_CAMBIO_ACTIVIDAD);
                 }else{
                     Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);
                 }
             break;
             case R.id.action_cambiarPuestos:
-                if(controlador.validarInicioSesion()!= Controlador.TiposError.SESION_FINALIZADA){
+                if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_CAPTURA_NUMERO_TRABAJADOR);
                 }else{
                     Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);
                 }
                 break;
             case R.id.action_finzalir:
-                if(controlador.validarInicioSesion()!= Controlador.TiposError.SESION_FINALIZADA){
+                if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_FINALIZAR_JORNADA);
                 }else{
                     Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);
@@ -116,6 +116,8 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
             @Override
             public void onClick(View view) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                Log.i("sesion",controlador.validarInicioSesion().name());
 
                 switch (view.getId()){
                     case R.id.btn_produccion:
@@ -142,7 +144,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
                         new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_ENVIAR_CORREO);
                         break;
                     case R.id.btn_finalizar:
-                        if(controlador.validarInicioSesion()!= Controlador.TiposError.SESION_FINALIZADA){
+                        if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                             new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_FINALIZAR_JORNADA);
                         }else{
                             Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
         adaptadorTrabajadores=new ListaTrabajadorAdapter(this,controlador,tvAsistencia,this.getClass());
         lvTrabajadores.setAdapter(adaptadorTrabajadores);
 
-        tvAsistencia.setText("Asistencia: "+String.valueOf(adaptadorTrabajadores.getCount()));
+        tvAsistencia.setText("Asistencia: "+controlador.totalAsistencia());
 
         Button btnGuardar = (Button) this.findViewById(R.id.btnGuardarTrabajadores);
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
         FileLog.i(Complementos.TAG_MAIN,"guardar datos del trabajador");
         adaptadorTrabajadores.add(trabajadores);
         adaptadorTrabajadores.notifyDataSetChanged();
-        tvAsistencia.setText(String.valueOf(adaptadorTrabajadores.getCount()));
+        tvAsistencia.setText("Asistencia: "+controlador.totalAsistencia());
     }
 
     @Override

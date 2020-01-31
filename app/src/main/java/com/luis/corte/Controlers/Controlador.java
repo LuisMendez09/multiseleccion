@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -344,7 +345,7 @@ public class Controlador {
                 if(catalogoPuesto.getId()>1){
                     if(!t.getPuestosActual().getId().equals(catalogoPuesto.getId())){
                         try {
-                            long cambio = horaCambio.equals("")?new Date().getTime(): Complementos.convertirStringAlong(Complementos.obtenerFechaString(new Date()),horaCambio);
+                            long cambio = horaCambio.equals("")?Complementos.getDateTimeActual():Complementos.convertirStringAlong(settings.getFechaString(),horaCambio);
                             Puestos p = dbHandlerl.getUltimoPuesto(settings.getFechaString(),t);
 
                             if(p!=null){
@@ -441,12 +442,19 @@ public class Controlador {
         Long hi;
         Long hf;
 
+        Log.i("verificacionHora","cambios "+cambioPuesto.toString());
+        Log.i("verificacionHora","cambios anterior "+puestoAnterio.toString());
+
         if(!cambioPuesto.getPuestos().getDescripcion().equals(puestoAnterio.getPuestos().getDescripcion())
                 || !cambioPuesto.getHoraInicioString().equals(puestoAnterio.getHoraInicioString())
                 || !cambioPuesto.getHoraFinalString().equals(puestoAnterio.getHoraFinalString())){
 
             if(!cambioPuesto.getHoraInicioString().equals(puestoAnterio.getHoraInicioString()) || !cambioPuesto.getHoraFinalString().equals(puestoAnterio.getHoraFinalString())){
-                Long horaActual = new Date().getTime();
+
+                Log.i("verificacionHora","hora inicio "+cambioPuesto.getHoraInicioString());
+                Log.i("verificacionHora","hora inicio "+puestoAnterio.getHoraInicioString());
+
+                Long horaActual = Complementos.getDateTimeActual();
 
                 hi = cambioPuesto.getDateInicio();
                 hf = cambioPuesto.getDateFin()==0?horaActual:cambioPuesto.getDateFin();
@@ -465,22 +473,22 @@ public class Controlador {
                                 if(hi<=oi && hf > oi){  //hi|------|oi|------|hf|------|of
                                     //hora final nueva interviene en otro puesto
                                     respuesta = TiposError.ERROR_SELECCION_HORA;
-                                    //Log.i("verificacionHora","hora final nueva interviene en otro puesto "+ hi+" <= "+oi+"=="+(hi<=oi) +" YY "+ hf +" > "+ oi+"=="+(hf>oi));
+                                    Log.i("verificacionHora","hora final nueva interviene en otro puesto "+ hi+" <= "+oi+"=="+(hi<=oi) +" YY "+ hf +" > "+ oi+"=="+(hf>oi));
                                     break;
                                 }else if(hi<of && hf>= of){   //oi|------|hi|------|of|------|hf
                                     //hora inicial nueva interviene en otro puesto
                                     respuesta = TiposError.ERROR_SELECCION_HORA;
-                                    //Log.i("verificacionHora","hora inicial nueva interviene en otro puesto "+ hi+" < "+of+"=="+(hi<of) +" YY "+ hf +" >= "+ of+"=="+(hf>=of));
+                                    Log.i("verificacionHora","hora inicial nueva interviene en otro puesto "+ hi+" < "+of+"=="+(hi<of) +" YY "+ hf +" >= "+ of+"=="+(hf>=of));
                                     break;
                                 }else if(hi>=oi && hf<=of){//oi|------|hi|------|hf|------|of
                                     //hora inicial y final nuevas intervien en otro puesto
                                     respuesta = TiposError.ERROR_SELECCION_HORA;
-                                    //Log.i("verificacionHora","hora inicial y final nuevas intervien en otro puesto "+hi+" >= "+oi+"=="+(hi>=oi) +" YY "+hf +" <= "+ of+"=="+(hf<=of));
+                                    Log.i("verificacionHora","hora inicial y final nuevas intervien en otro puesto "+hi+" >= "+oi+"=="+(hi>=oi) +" YY "+hf +" <= "+ of+"=="+(hf<=of));
                                     break;
                                 }else if(hi<=oi && hf>=of){//hi|------|oi|------|of|------|hf
                                     //hora inicio y final nuevas afecta a otro puesto
                                     respuesta = TiposError.ERROR_SELECCION_HORA;
-                                    //Log.i("verificacionHora","hora inicio y final nuevas afecta a otro puesto "+hi+"<="+oi+"=="+(hi<=oi)+" YY "+hf+">="+of+"=="+(hf>=of));
+                                    Log.i("verificacionHora","hora inicio y final nuevas afecta a otro puesto "+hi+"<="+oi+"=="+(hi<=oi)+" YY "+hf+">="+of+"=="+(hf>=of));
                                     break;
                                 }
                             }
@@ -492,7 +500,7 @@ public class Controlador {
                         respuesta = TiposError.ERROR_SELECCION_HORA;
                     }
                 }else{
-                    //Log.i("verificacionHora","hora inicio no es menor que hora final "+hi+" < "+hf + "=="+ (hi < hf ));
+                    Log.i("verificacionHora","hora inicio no es menor que hora final "+hi+" < "+hf + "=="+ (hi < hf ));
                     respuesta = TiposError.ERROR_SELECCION_HORA;
                 }
             }
@@ -514,24 +522,20 @@ public class Controlador {
                 //puestoAnterio.setPuestosActual(puestoAnterio.getPuestos());
                 respuesta = updateTrabajadores(trabajador,trabajadorA);
 
-
-
             }else if(cambioPuesto.getDateFin()==0){
                 Log.i("verificacionHora","actualziar el puesto actual y puestos del trabajador");
                 respuesta = dbHandlerl.updatePuestos(cambioPuesto)==-1?TiposError.ERROR_DB:TiposError.EXITOSO;
-                if(respuesta == TiposError.EXITOSO){
+                if(respuesta == TiposError.EXITOSO && !cambioPuesto.getPuestos().getId().equals(puestoAnterio.getPuestos().getId())){
                     Trabajadores trabajador = new Trabajadores(cambioPuesto.getTrabajadorObjec());
                     trabajador.setPuestosActual(cambioPuesto.getPuestos());
 
                     Trabajadores trabajadorA = new Trabajadores(puestoAnterio.getTrabajadorObjec());
                     trabajador.setPuestosActual(cambioPuesto.getPuestos());
-                    //cambioPuesto.setPuestosActual(cambioPuesto.getPuestos());
-                    //puestoAnterio.setPuestosActual(puestoAnterio.getPuestos());
-                    respuesta = updateTrabajadores(trabajador,trabajadorA);
 
-
+                    respuesta = updateTrabajadores(trabajador, trabajadorA);
                 }
             }else{
+                Log.i("verificacionHora","actualziar solo el puesto del trabajador");
                 respuesta = dbHandlerl.updatePuestos(cambioPuesto)==-1?TiposError.ERROR_DB:TiposError.EXITOSO;
             }
         }
@@ -1083,7 +1087,30 @@ Log.i("captura",getConfiguracion().toString());
 
     public  ArrayList<ReporteProduccion> getReporteDetalleTrabajador(Trabajadores trabajador){
 
-        return dbHandlerl.getReporte(settings.getFechaString(),trabajador);
+        ArrayList<ReporteProduccion> reporte = dbHandlerl.getReporte(settings.getFechaString(), trabajador);
+        TreeMap<Long,ReporteProduccion> total = new TreeMap<>();
+        ReporteProduccion totales;
+        if(trabajador==null){
+            for (ReporteProduccion rp : reporte) {
+                if (!total.containsKey(rp.getActividad().getId())){
+                    totales = new ReporteProduccion(rp);
+                    totales.setActividad(rp.getActividad());
+                    total.put(rp.getActividad().getId(),totales);
+                }else{
+                    totales = total.get(rp.getActividad().getId());
+                }
+
+                totales.setTotalPrimera(totales.getTotalPrimera()+rp.getTotalPrimera());
+                totales.setTotalSegunda(totales.getTotalSegunda()+rp.getTotalSegunda());
+                totales.setTotalAgranel(totales.getTotalAgranel()+rp.getTotalAgranel());
+            }
+
+            Collection<ReporteProduccion> values = total.values();
+            reporte.clear();
+            reporte = new ArrayList<>(values);
+        }
+
+        return reporte;
     }
 
     private ArrayList<ReporteProduccion> getReporte(Long fechaInicial, Long fechaFinal){

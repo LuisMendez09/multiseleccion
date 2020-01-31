@@ -1024,7 +1024,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return ArrayList de ReporteProduccion
      */
     public ArrayList<ReporteProduccion> getReporte(String fecha,Trabajadores trabajador) {
-        ArrayList<ReporteProduccion> reporte = new ArrayList<ReporteProduccion>();
+        ArrayList<ReporteProduccion> reporte = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT "+KEY_IDTRABAJADOR_PRODUCCION+","+KEY_IDACTIVIDAD_PRODUCCION+",SUM("+KEY_PRIMERA_PRODUCCION+"),SUM("+KEY_SEGUNDA_PRODUCCION+"),SUM("+KEY_AGRANEL_PRODUCCION+")" +
                 " FROM " + TABLE_PRODUCCION + " WHERE " + KEY_ENVIADO_PRODUCCION + " = 0 AND "+KEY_FECHASTRING_PRODUCCION+" = '"+fecha+"' " ;

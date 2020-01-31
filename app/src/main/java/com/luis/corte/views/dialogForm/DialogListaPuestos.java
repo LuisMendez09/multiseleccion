@@ -41,7 +41,8 @@ public class DialogListaPuestos extends AlertDialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_detalle_puestos);
-
+        setCancelable(false);
+        setCanceledOnTouchOutside(false);
 
         final ListView lv = (ListView) findViewById(R.id.lv_lista_puestos);
         listaPuestosAdaptar =new ListaPuestosAdaptar(this.getContext(),puestos);
@@ -57,7 +58,7 @@ public class DialogListaPuestos extends AlertDialog {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(controlador.validarInicioSesion()!= Controlador.TiposError.SESION_FINALIZADA){
+                if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     posicion1 = position;
                     DialogModificacionPuestos dmp = new DialogModificacionPuestos(DialogListaPuestos.this.getContext());
                     dmp.setControlador(controlador,puestos.get(position),listaPuestosAdaptar,listaTrabajadorAdapter);
@@ -85,30 +86,5 @@ public class DialogListaPuestos extends AlertDialog {
         this.controlador = controlador;
         this.listaTrabajadorAdapter = listaTrabajadorAdapter;
     }
-/*
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0,v.getId(),0,"Editar Puesto");
-    }
 
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-
-        if(featureId== Window.FEATURE_CONTEXT_MENU)
-            return onContextItemSelected(item);
-        else
-            return super.onMenuItemSelected(featureId, item);
-    }
-
-    @Override
-    public boolean onContextItemSelected( MenuItem item) {
-        switch (item.getTitle().toString()){
-            case "Editar Puesto":
-
-                break;
-        }
-        return super.onContextItemSelected(item);
-    }
-*/
 }
