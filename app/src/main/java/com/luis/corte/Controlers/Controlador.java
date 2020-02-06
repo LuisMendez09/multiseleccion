@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.luis.corte.Controlers.handlers.DBHandler;
 import com.luis.corte.complementos.Complementos;
 import com.luis.corte.complementos.FileLog;
+import com.luis.corte.complementos.KeyValues;
 import com.luis.corte.models.CatalogoActividades;
 import com.luis.corte.models.CatalogoCajas;
 import com.luis.corte.models.CatalogoPuestos;
@@ -21,21 +23,23 @@ import com.luis.corte.models.ReporteProduccion;
 import com.luis.corte.models.Settings;
 import com.luis.corte.models.Trabajadores;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class Controlador {
@@ -63,8 +67,12 @@ public class Controlador {
         ERROR_TIEMPO_LIMITE,
         ERROR_TRABAJADOR_NO_VALIDO,
         ERROR_CREACION_ARCHIVO,
+        ERROR_LEER_ARCHIVO,
+        ERROR_VALOR_NO_VALIDO_ARCHIVO,
+        ERROR_CERRAR_ARCHIVO,
         ERROR_ENVIO_CORREO,
         ERROR_FECHA_SISTEMA_INVALIDA,
+        ERROR_COMPRESION,
         SIN_CAMBIOS,
         SIN_CAMBIO_DE_PUESTO,
         SESION_NO_VALIDA,
@@ -256,7 +264,6 @@ public class Controlador {
         return tiposError;
     }
 
-
     public TiposError validarInicioSesion(){//al finalizar poner en 0 iniciojornada en 1 finalizarjornada y 0 totaltrabajadores
         TiposError r = TiposError.SESION_NO_VALIDA;
         Log.i("inicio",settings.toString());
@@ -287,6 +294,11 @@ public class Controlador {
         }
     }
 
+    public void reinicarTablaEmpleados(){
+        dbHandlerl.reMakeTables();
+        Controlador.listaTrabajadores.clear();
+    }
+
     /////////////////////////////////METODOS DE LISTA DE PUESTOS//////////////////////////////
     public ArrayList<CatalogoPuestos> getListaPuestos(){
         if(listaActividades.size()==0){
@@ -298,6 +310,9 @@ public class Controlador {
                 catalogoPuestos = new CatalogoPuestos("NO TRABAJO");
                 dbHandlerl.addCatalogoPuestos(catalogoPuestos);
                 listaPuestos.add(catalogoPuestos);
+                catalogoPuestos = new CatalogoPuestos("PERSONAL CAMPO");
+                dbHandlerl.addCatalogoPuestos(catalogoPuestos);
+                listaPuestos.add(catalogoPuestos);
             }
         }
 
@@ -306,7 +321,7 @@ public class Controlador {
 
     public CatalogoPuestos getListaPuestos(Long id){
         CatalogoPuestos catalogoPuestos;
-        for (CatalogoPuestos p : listaPuestos ) {
+        for (CatalogoPuestos p : Controlador.listaPuestos ) {
             if(p.getId().equals(id)){
                 return  p;
             }
@@ -413,7 +428,7 @@ public class Controlador {
         Puestos puestosTrabajador = dbHandlerl.getUltimoPuesto(settings.getFechaString(), trabajador);
 
         if(puestosTrabajador!=null){
-            puestosTrabajador.setPuestosActual(trabajador.getPuestosActual());
+            puestosTrabajador.setPuestos(trabajador.getPuestosActual());
             int i = dbHandlerl.updatePuestos(puestosTrabajador);
 
             if(i==-1)
@@ -756,15 +771,11 @@ public class Controlador {
 
     public TiposError setTrabajador(Trabajadores trabajadores){
 
-        Log.e("new trabajador","controlador /*//**-/-*/-*/*-/*-/*-/*-/-");
         TiposError r= TiposError.ERROR_DB;
         if(settings!=null) {
             if(trabajadores.validarCamposVacios()){
                 Long i = dbHandlerl.addTrabajadores(trabajadores);
-                Log.e("new trabajador","ya se guardo en la db "+i);
                 if(!i.equals((long)-1)){
-                    Log.e("new trabajador","actualizar arraylist" +trabajadores.toString());
-                    //trabajadores.setIdTrabajdor(i);
                     listaTrabajadores.add(trabajadores);//se agrega al arrayList
                     r = TiposError.EXITOSO;
                 }
@@ -829,17 +840,17 @@ public class Controlador {
         TiposError r= TiposError.ERROR_DB;
         if(trabajadores.validarCamposVacios()){
             if(trabajadorAnterior.validarCambios(trabajadores)){
-                if(settings!=null) {
+                if(Controlador.settings!=null) {
                     int i = dbHandlerl.updateTrabajdores(trabajadores);
                     if(i!=-1){
 
-                        for (int index=0 ; index<listaTrabajadores.size();index++) {
-                            if(trabajadores.getIdTrabajdor().equals(listaTrabajadores.get(index).getIdTrabajdor())){
-                                listaTrabajadores.set(index,trabajadores);
-                                r = TiposError.EXITOSO;
-                                break;
-                            }
+                    for (int index=0 ; index<listaTrabajadores.size();index++) {
+                        if(trabajadores.getIdTrabajdor().equals(listaTrabajadores.get(index).getIdTrabajdor())){
+                            listaTrabajadores.set(index,trabajadores);
+                            r = TiposError.EXITOSO;
+                            break;
                         }
+                    }
 
                         //r = actualizarUltimoPuesto(trabajadores);
                     }
@@ -1183,14 +1194,14 @@ Log.i("captura",getConfiguracion().toString());
     @SuppressLint("IntentReset")
     public TiposError enviarCorreo(String fechaInicio, String fechaFinal){
         File file;
-        Log.i("EMAIL",fechaInicio+"----"+fechaFinal);
         TiposError error = TiposError.EXITOSO;
         if(!fechaFinal.equals("")&&!fechaInicio.equals("")){
             try {
                 file = crearArchivoXlsx(fechaInicio,fechaFinal);
 
                 if(file!=null){
-                    Uri uri = Uri.fromFile(file);
+                    Uri uri = FileProvider.getUriForFile(this.getActivity(),"com.luis.corte.example.provider",file);
+                            //Uri.fromFile(file);
 
                     String [] to = {configuracion.getPara()};
                     String [] cc = {configuracion.getCc()};
@@ -1205,6 +1216,8 @@ Log.i("captura",getConfiguracion().toString());
 
                     try {
                         if (emailIntent.resolveActivity(this.activity.getPackageManager()) != null) {
+                            /*StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                            StrictMode.setVmPolicy(builder.build());*/
                             this.activity.startActivity(Intent.createChooser(emailIntent, "Enviar email."));
                             Log.i("EMAIL", "Enviando email...");
                         }else{
@@ -1234,12 +1247,6 @@ Log.i("captura",getConfiguracion().toString());
         File archivoXls = null;
         int numeroRenglon = 0;
         int numeroCelda = 0;
-        Integer sumPrimera=0;
-        Integer sumSegunda=0;
-
-        Float sumCajasPrimera=0.0f;
-        Float sumCajasSegunda=0.0f;
-        Float sumCajasAgranel=0.0f;
 
         Long fi = Complementos.convertirStringAlong(fechaInicio,"00:00:00:0000");
         Long ff = Complementos.convertirStringAlong(fechaFinal,"23:59:59:0000");
@@ -1263,56 +1270,6 @@ Log.i("captura",getConfiguracion().toString());
         for (ReporteProduccion rp : reporte) {
 
             Object[] array = rp.getArray();
-            /*if(key.equals("")){
-               key =  rp.getPuestos().getFechaString()+""+rp.getConsecutivo();
-            }
-
-            if(!key.equals(rp.getPuestos().getFechaString()+""+rp.getConsecutivo())){
-                row = sheet.createRow(numeroRenglon++);
-                numeroCelda = 0;
-
-                Cell c = row.createCell(numeroCelda++);
-                c.setCellValue(rp.getPuestos().getFechaString());
-                c = row.createCell(numeroCelda++);
-                c.setCellValue("TOTAL:");
-                c = row.createCell(numeroCelda++);
-                c.setCellValue("");
-                c = row.createCell(numeroCelda++);
-                c.setCellValue("");
-                c = row.createCell(numeroCelda++);
-                c.setCellValue("");
-                c = row.createCell(numeroCelda++);
-                c.setCellValue("");
-
-                c = row.createCell(numeroCelda++);
-                c.setCellValue(sumPrimera);
-                c = row.createCell(numeroCelda++);
-                c.setCellValue(sumSegunda);
-
-                c = row.createCell(numeroCelda++);
-                c.setCellValue(sumCajasPrimera);
-                c = row.createCell(numeroCelda++);
-                c.setCellValue(sumCajasSegunda);
-                c = row.createCell(numeroCelda++);
-                c.setCellValue(sumCajasAgranel);
-
-                key =  rp.getPuestos().getFechaString()+""+rp.getConsecutivo();
-
-                sumPrimera =0;
-                sumSegunda=0;
-
-                sumCajasPrimera= Float.valueOf(0);
-                sumCajasSegunda=Float.valueOf(0);
-                sumCajasAgranel=Float.valueOf(0);
-            }else{
-                sumPrimera = sumPrimera + ((Integer) array[6]);
-                sumSegunda = sumSegunda + ((Integer) array[7]);
-
-                sumCajasPrimera = sumCajasPrimera + ((Float) array[8]);;
-                sumCajasSegunda = sumCajasSegunda + ((Float) array[9]);;
-                sumCajasAgranel = sumCajasAgranel + ((Float) array[10]);
-            }*/
-
 
             row = sheet.createRow(numeroRenglon++);
             numeroCelda = 0;
@@ -1337,7 +1294,8 @@ Log.i("captura",getConfiguracion().toString());
         //numeroCelda = 0;
         try {
             //Se genera el documento
-            archivoXls = new File(Complementos.rutaAlmacenamiento(this.activity).getAbsolutePath()+File.separator+"doc"+File.separator+"Produccion.xls");
+            String name = KeyValues.XLS_NAME+" de "+ fechaInicio+" a "+fechaFinal+KeyValues.EXTENCIO_XLS;
+            archivoXls = new File(Complementos.rutaAlmacenamiento(this.activity).getAbsolutePath()+File.separator+KeyValues.FOLDER_DOC+File.separator+name);
 
             if (!archivoXls.getParentFile().exists()) {
                 archivoXls.getParentFile().mkdirs();
@@ -1352,6 +1310,126 @@ Log.i("captura",getConfiguracion().toString());
         }
 
         return archivoXls;
+    }
+
+    public TiposError importarTrabajadores(Uri archivoTrabajadores){
+        String url = Complementos.rutaAlmacenamiento(this.getActivity()).getAbsolutePath();
+        String archivoOrigen = url+File.separator+ KeyValues.FOLDER_DATABASE+File.separator+KeyValues.MY_DATABASE_NAME+KeyValues.EXTENCIO_DATABASE;
+        String d = new SimpleDateFormat("ddMMyyyy HHmmss").format(Calendar.getInstance().getTime());
+        String destinoArchivo = url+File.separator+KeyValues.FOLDER_ZIP+File.separator+KeyValues.ZIP_NAME+"-"+d+KeyValues.EXTENCIO_ZIP;
+
+        TiposError error = CompresorZip.comprimir(archivoOrigen, destinoArchivo, 0)==true?TiposError.EXITOSO:TiposError.ERROR_COMPRESION;
+
+
+        if(error==TiposError.EXITOSO){
+            reinicarTablaEmpleados();
+            error = leerXls(archivoTrabajadores);
+        }
+
+        return error;
+    }
+
+    private TiposError leerXls(Uri archivoXls){
+        InputStream excelStream = null;
+        TiposError error = TiposError.EXITOSO;
+        Trabajadores trabajador = null;
+        CatalogoPuestos cp=getListaPuestos(3L);
+        try {
+            FileLog.i(Complementos.TAG_CONTROLADOR,"Inicia importacion trabajadores");
+            int columnaConsecutivo=0;
+            int columnaNombre=1;
+            int columnaApPaterno=2;
+            int columnaApMaterno = 3;
+
+
+            excelStream = activity.getContentResolver().openInputStream(archivoXls);
+            HSSFWorkbook hssfWorkbook = new HSSFWorkbook(excelStream);
+
+            HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
+            HSSFRow row;
+            HSSFCell cell = null;
+            for (int r=1;r<=hssfSheet.getLastRowNum();r++){
+
+                row = hssfSheet.getRow(r);
+                if(row==null){
+                    break;
+                }else{
+                    trabajador = new Trabajadores();
+                    for (int c=0;c<4;c++){
+                        HSSFCell cel1 = row.getCell(c);
+                        if(c==columnaConsecutivo){
+                            trabajador.setConsecutivo((int) ((double)getValuesCell(cel1)));
+                        }
+
+
+                        else if (c==columnaNombre)
+                            trabajador.setNombre(getValuesCell(cel1).toString());
+                        else if (c==columnaApPaterno)
+                            trabajador.setApellidoPaterno(getValuesCell(cel1).toString());
+                        else if (c==columnaApMaterno)
+                            trabajador.setApellidoMaterno(getValuesCell(cel1).toString());
+                    }
+
+                    trabajador.setPuestosActual(cp);
+                    System.out.println(trabajador.toString());
+                    error = setTrabajador(trabajador);
+
+                    if(error != TiposError.EXITOSO)
+                       break;
+                }
+            }
+
+            hssfWorkbook.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            FileLog.i(Complementos.TAG_CONTROLADOR, "Error al leer archivo " + e.getMessage());
+            reinicarTablaEmpleados();
+            error = TiposError.ERROR_LEER_ARCHIVO;
+        } catch (IOException e) {
+            e.printStackTrace();
+            FileLog.i(Complementos.TAG_CONTROLADOR, "Error al leer archivo " + e.getMessage());
+            reinicarTablaEmpleados();
+            error = TiposError.ERROR_LEER_ARCHIVO;
+        }catch (ClassCastException e){
+            e.printStackTrace();
+            FileLog.i(Complementos.TAG_CONTROLADOR, "Error al leer archivo " + e.getMessage());
+            reinicarTablaEmpleados();
+            error = TiposError.ERROR_VALOR_NO_VALIDO_ARCHIVO;
+        }finally {
+            try {
+                excelStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileLog.i(Complementos.TAG_CONTROLADOR, "Error al cerrar archivo " + e.getMessage());
+                error = TiposError.ERROR_CERRAR_ARCHIVO;
+            }
+            excelStream = null;
+            trabajador =null;
+        }
+
+        return error;
+    }
+
+    private Object getValuesCell(HSSFCell cel1){
+        Object value="";
+        try{
+            switch (cel1.getCellTypeEnum()){
+                case NUMERIC:
+                    value = cel1.getNumericCellValue();
+                    break;
+                case STRING:
+                    value = cel1.getStringCellValue();
+                    break;
+                default:
+                    value = "";
+                    break;
+            }
+        }catch (NullPointerException e){
+            value ="";
+        }
+
+
+        return value;
     }
 
     public static void openLog(Context context,String TAG){

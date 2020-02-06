@@ -114,7 +114,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public DBHandler(final Context context) {
 
-        super(new DatabaseContext(context), KeyValues.MY_DATABASE_NAME, null, KeyValues.DATABASE_VERSION);
+        super(new DatabaseContext(context), KeyValues.MY_DATABASE_NAME+KeyValues.EXTENCIO_DATABASE, null, KeyValues.DATABASE_VERSION);
         //super(context, KeyValues.MY_DATABASE_NAME, null, KeyValues.DATABASE_VERSION);
         FileLog.v(Complementos.TAG_BDHANDLER,"llamada al metodo DBHandler()");
     }
@@ -245,6 +245,7 @@ public class DBHandler extends SQLiteOpenHelper {
         FileLog.v(Complementos.TAG_BDHANDLER,"REINICIAR LA TABLA ACTIVIDADES");
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATOLOGO_ACTIVIDADES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATOLOGO_TAMANIOCAJAS);
 
         String CREATE_ACTIVIDADES_TABLE = "CREATE TABLE " + TABLE_CATOLOGO_ACTIVIDADES + "("
                 + KEY_ID_ACTIVIDADES + " INTEGER PRIMARY KEY,"
@@ -261,11 +262,10 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TAMANOCAJA_TABLE);
     }
 
-
     public void recrearTablaCatalogoPuestos(){
         FileLog.v(Complementos.TAG_BDHANDLER,"REINICIAR LA TABLA CATALOGO PUESTOS");
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATOLOGO_ACTIVIDADES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATOLOGO_PUESTOS);
 
         String CREATE_CATALOGOPUESTOS_TABLE = "CREATE TABLE " + TABLE_CATOLOGO_PUESTOS + "("
                 + KEY_ID_CATALOGOPUESTOS + " INTEGER PRIMARY KEY,"
@@ -289,30 +289,13 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TRABAJADORES_TABLE);
     }
 
-    public void reMakeTables(int limpiarTodo){
+    public void reMakeTables(){
 
-        FileLog.v(Complementos.TAG_BDHANDLER,"INICIA EL REINICIO DE LAS TABLAS METODO reMakeTables() PARAMETRO limpiarTodo="+limpiarTodo);
+        FileLog.v(Complementos.TAG_BDHANDLER,"INICIA EL REINICIO DE LAS TABLAS METODO reMakeTables()");
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRABAJADORES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTINGS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PUESTOS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCCION);
-
-        String CREATE_SETTINGS_TABLE = "CREATE TABLE " + TABLE_SETTINGS + "("
-                +KEY_ID_SETTINGS + " INTEGER PRIMARY KEY,"
-                +KEY_DATEINICIO_SETTINGS+ " INTEGER,"
-                +KEY_DATEFIN_SETTINGS+ " INTEGER,"
-                +KEY_FECHASTRING_SETTINGS+ " TEXT,"
-                +KEY_HORAINICIOSTRING_SETTINGS+ " TEXT,"
-                +KEY_HORAFINSTRING_SETTINGS+ " TEXT,"
-                +KEY_JORNADAFINALIZADA_SETTINGS+ " INTEGER,"
-                +KEY_JORNADAINICIADA_SETTINGS+ " INTEGER,"
-                +KEY_ENVIODATOS_SETTINGS+ " INTEGER,"
-                +KEY_TOTALEMPLEADOS_SETTINGS+ " INTEGER,"
-                +KEY_IDACTIVIDAD_SETTINGS+ " INTEGER,"
-                +KEY_ACTIVIDAD_SETTINGS+ " TEXT"
-                + ")";
-        db.execSQL(CREATE_SETTINGS_TABLE);
 
         String CREATE_TRABAJADORES_TABLE = "CREATE TABLE " + TABLE_TRABAJADORES + "("
                 + KEY_ID_TRABAJADORES + " INTEGER PRIMARY KEY,"

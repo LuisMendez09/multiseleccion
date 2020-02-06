@@ -6,7 +6,7 @@
     <dimen name="sub_title_font_zise">18dp</dimen>
     <dimen name="font_zise">16dp</dimen>
     <dimen name="font_button">22dp</dimen>
-    <dimen name="font_label">16dp</dimen>
+    <dimen name="font_label">16sp</dimen>
     <dimen name="font_label_titulo">18dp</dimen>
     <dimen name="zise_button_width">150dp</dimen>
     <dimen name="zise_button_height">70dp</dimen>
@@ -23,6 +23,6 @@
     <dimen name="margin_bottom_up_dialog">5dp</dimen>
 
     <dimen name="margin_bottom_up_componentes">15dp</dimen>
-    <dimen name="padding_left_right_componentes">12dp</dimen>
+    <dimen name="padding_left_right_componentes">6dp</dimen>
     <dimen name="padding_top_bottom_componentes">6dp</dimen>
 </resources>

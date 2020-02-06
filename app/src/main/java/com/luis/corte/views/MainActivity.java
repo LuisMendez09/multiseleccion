@@ -1,14 +1,22 @@
 package com.luis.corte.views;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,21 +29,26 @@ import com.luis.corte.views.adaptadores.ListaTrabajadorAdapter;
 import com.luis.corte.complementos.Complementos;
 import com.luis.corte.complementos.FileLog;
 import com.luis.corte.views.dialogForm.CapturaDialogDialog;
+import com.luis.corte.views.dialogForm.DialogListaPuestos;
 import com.luis.corte.views.dialogForm.InterfaceDialogs;
 import com.luis.corte.models.CatalogoActividades;
 import com.luis.corte.models.CatalogoCajas;
 import com.luis.corte.models.CatalogoPuestos;
 import com.luis.corte.models.Trabajadores;
+import com.luis.corte.views.fragment.Cuadrilla;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements InterfaceDialogs {
     ListaTrabajadorAdapter adaptadorTrabajadores;
     TextView tvAsistencia;
     ListView lvTrabajadores;
     private Controlador controlador;
+    AbsListView.MultiChoiceModeListener multiseleccion;
+    public static ActionMode mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cerrarModal();
                 FileLog.i(Complementos.TAG_MAIN,"Agregar nuevo trabajador");
                 new CapturaDialogDialog(controlador, MainActivity.this, null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TRABAJADOR);
             }
@@ -76,6 +90,140 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
                 }
             }
         });
+
+        lvTrabajadores.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        multiseleccion = multiseleccion();
+        lvTrabajadores.setMultiChoiceModeListener(multiseleccion);
+
+        lvTrabajadores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                final Trabajadores trabajadores = adaptadorTrabajadores.getItem(position);
+
+                AlertDialog.Builder menu = new AlertDialog.Builder(controlador.getActivity());
+                ListView itemsMenu = new ListView(controlador.getActivity());
+                String items [] = new String[]{"EDITAR TRABAJADOR"};
+
+
+
+                ArrayAdapter<String> adapterMenu = new ArrayAdapter<>(controlador.getActivity(),android.R.layout.simple_list_item_1,android.R.id.text1,items);
+                itemsMenu.setAdapter(adapterMenu);
+                menu.setView(itemsMenu);
+                final AlertDialog dialog = menu.create();
+                dialog.show();
+
+                itemsMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        if(position==0){
+                            Controlador.TiposError tiposError = controlador.validarInicioSesion();
+                            if(tiposError== Controlador.TiposError.SESION_INICIADA || tiposError== Controlador.TiposError.SESION_REINIADA){
+                                new CapturaDialogDialog(controlador, adaptadorTrabajadores,trabajadores, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TRABAJADOR);
+                            }else{
+                                Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);
+                            }
+                        }else{
+                            DialogListaPuestos dmp = new DialogListaPuestos(controlador.getActivity());
+                            dmp.setPuestos(controlador.getPuestosTrabajador(trabajadores),trabajadores, MainActivity.this.controlador,adaptadorTrabajadores);
+                            dmp.show();
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+            }
+        });
+    }
+
+    public static void cerrarModal(){
+        if(mode!=null)
+            mode.finish();
+    }
+
+    private AbsListView.MultiChoiceModeListener multiseleccion(){
+        return  new AbsListView.MultiChoiceModeListener() {
+            private int nr = 0;
+
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                mode.setTitle("" + lvTrabajadores.getCheckedItemCount() + " items selected");
+                if (checked) {
+                    nr++;
+                    adaptadorTrabajadores.setNewSelection(position, checked);
+                } else {
+                    nr--;
+                    adaptadorTrabajadores.removeSelection(position);
+                }
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater menuInflater = mode.getMenuInflater();
+                menuInflater.inflate(R.menu.menu_contextual_actionbar, menu);
+                MainActivity.mode = mode;
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                Set<Integer> currentCheckedPosition = adaptadorTrabajadores.getCurrentCheckedPosition();
+                switch (item.getItemId()) {
+                    case R.id.menu_falta:
+                        for (Integer posicion : currentCheckedPosition) {
+                            Trabajadores trabajador = adaptadorTrabajadores.getItem(posicion);
+                            if(trabajador.getPuestosActual().getId()>2){
+                                Trabajadores trabajadorAnterior = new Trabajadores(trabajador);
+                                trabajador.setPuestosActual(controlador.getListaPuestos(2L));
+
+                                Controlador.TiposError tiposError = controlador.updateTrabajadores(trabajador, trabajadorAnterior);
+                                if(tiposError== Controlador.TiposError.EXITOSO)
+                                    tiposError = controlador.actualizarUltimoPuesto(trabajador);
+
+                                if(tiposError!= Controlador.TiposError.EXITOSO)
+                                    Complementos.mensajesError(controlador.getActivity(),tiposError);
+                            }
+                        }
+                        break;
+                    case R.id.menu_asistencia:
+                        for (Integer posicion : currentCheckedPosition) {
+                            Trabajadores trabajador = adaptadorTrabajadores.getItem(posicion);
+                            if(trabajador.getPuestosActual().getId()==2){
+                                Trabajadores trabajadorAnterior = new Trabajadores(trabajador);
+                                trabajador.setPuestosActual(controlador.getListaPuestos(3L));
+
+                                Controlador.TiposError tiposError = controlador.updateTrabajadores(trabajador, trabajadorAnterior);
+                                if(tiposError== Controlador.TiposError.EXITOSO)
+                                    tiposError = controlador.actualizarUltimoPuesto(trabajador);
+
+                                if(tiposError!= Controlador.TiposError.EXITOSO)
+                                    Complementos.mensajesError(controlador.getActivity(),tiposError);
+                            }
+                        }
+                        break;
+
+                }
+                nr = 0;
+                adaptadorTrabajadores.clearSelection();
+                mode.finish();
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                nr = 0;
+                adaptadorTrabajadores.clearSelection();
+            }
+
+
+        };
+
+
     }
 
     @Override
@@ -96,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
+        cerrarModal();
         switch (item.getItemId()){
             case R.id.action_addPuestos:
                 FileLog.i(Complementos.TAG_MAIN,"Agregar nuevo puesto");
@@ -114,8 +262,27 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
                 FileLog.i(Complementos.TAG_MAIN,"Agregar o configurar las configuracion");
                 new CapturaDialogDialog(controlador,MainActivity.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_CONFIGURACION);
                 break;
+            case R.id.action_importar:
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/vnd.ms-excel");
+                startActivityForResult(intent,42);
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Uri uri = null;
+        if (data != null) {
+            uri = data.getData();
+            FileLog.i(Complementos.TAG_MAIN, "seleccion de archivo Uri: " + uri.getPath());
+            Controlador.TiposError tiposError = this.controlador.importarTrabajadores(uri);
+            tvAsistencia.setText("Asistencia: "+controlador.totalAsistencia());
+            adaptadorTrabajadores.notifyDataSetChanged();
+            Complementos.mensajesError(this,tiposError);
+        }
     }
 
     @Override

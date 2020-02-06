@@ -22,7 +22,7 @@ public class Cortina extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_cortina);
         Controlador.openLog(this,Complementos.TAG_INICIO);
-
+        FileLog.i(Complementos.TAG_INICIO,"iniciar la app");
         controlador = new Controlador(this);
         TimerTask task = new TimerTask() {
             @Override
@@ -30,7 +30,7 @@ public class Cortina extends AppCompatActivity {
                 Intent mainIntent = null;
                 // Comienza la proxima actividad
                 Controlador.TiposError validacionSesion = controlador.validarInicioSesion();
-                Log.e("inicio",validacionSesion.name());
+
                 if(validacionSesion==Controlador.TiposError.SESION_INICIADA || validacionSesion==Controlador.TiposError.SESION_FINALIZADA)
                     mainIntent = new Intent().setClass(Cortina.this, Produccion.class);
                 else if (validacionSesion==Controlador.TiposError.SESION_NO_FINALIZADA){
@@ -44,7 +44,7 @@ public class Cortina extends AppCompatActivity {
                     mainIntent = new Intent().setClass(Cortina.this, MainActivity.class);
                 }
 
-                FileLog.i(Complementos.TAG_INICIO,"iniciar la app"+ validacionSesion.name());
+                FileLog.i(Complementos.TAG_INICIO,"session validada "+ validacionSesion.name());
                 if(validacionSesion!=Controlador.TiposError.SESION_NO_VALIDA){
                     startActivityForResult(mainIntent,100);
                     // cierra la actividad

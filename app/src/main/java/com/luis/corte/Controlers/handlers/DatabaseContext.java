@@ -28,18 +28,11 @@ public class DatabaseContext extends ContextWrapper {
 
         String dbfile = storageDir.getAbsolutePath() + File.separator+ "databases" + File.separator + name;
 
-        System.out.println(dbfile);
         result = new File(dbfile);
 
         if (!result.getParentFile().exists()) {
             result.getParentFile().mkdirs();
         }
-
-        if (!dbfile.endsWith(".db")) {
-            dbfile += ".db" ;
-        }
-
-
 
         return result;
     }

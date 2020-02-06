@@ -1,6 +1,7 @@
 package com.luis.corte.views.adaptadores;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,9 @@ import com.luis.corte.models.CatalogoCajas;
 import com.luis.corte.models.CatalogoPuestos;
 import com.luis.corte.models.Trabajadores;
 
+import java.util.HashMap;
+import java.util.Set;
+
 
 /**
  * Created by josu on 3/9/2017.
@@ -37,7 +41,7 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
     private Trabajadores trabajadores;
     private TextView asistencia;
     private Class origen;
-    Integer posicion1;
+    private HashMap<Integer, Boolean> mSelection = new HashMap<Integer, Boolean>();
 
     public TextView consecutivo;
     public TextView trabajador;
@@ -70,21 +74,18 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
         try {
             final Trabajadores empleado = controlador.getTrabajador(position);
 
+            consecutivo = (TextView) convertView.findViewById(R.id.tv_consecutivo);
+            trabajador = (TextView) convertView.findViewById(R.id.tv_trabajador);
+            puesto = (TextView) convertView.findViewById(R.id.tv_puesto);
 
-            TrabajadoresViewHolder holder = new TrabajadoresViewHolder(convertView, origen);
+            consecutivo.setText(empleado.getConsecutivo().toString());
+            trabajador.setText(empleado.getTrabajador());
+            puesto.setText(empleado.getPuestosActual().getDescripcion());
 
-            holder.consecutivo.setText(empleado.getConsecutivo().toString());
-            holder.trabajador.setText(empleado.getTrabajador());
-            holder.puesto.setText(empleado.getPuestosActual().getDescripcion());
-
-            holder.setLongClickListener(new LongClickListener() {
-                @Override
-                public void OnItemLongClik() {
-                    trabajadores = empleado;
-                    posicion1 = position;
-                }
-            },empleado);
-
+            convertView.setBackgroundColor(Color.parseColor("#ffffff")); //default color
+            if (mSelection.get(position) != null) {
+                convertView.setBackgroundColor(controlador.getActivity().getResources().getColor(R.color.colorAccent));// this is a selected position so make it red
+            }
 
         }catch (Exception e){
             System.out.println("error "+e.getCause());
@@ -92,6 +93,30 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
 
         return convertView;
     }
+
+    public void setNewSelection(int position, boolean value) {
+        mSelection.put(position, value);
+        notifyDataSetChanged();
+    }
+
+    public boolean isPositionChecked(int position) {
+        Boolean result = mSelection.get(position);
+        return result == null ? false : result;
+    }
+
+    public Set<Integer> getCurrentCheckedPosition() {
+        return mSelection.keySet();
+    }
+
+    public void removeSelection(int position) {
+
+        mSelection.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void clearSelection() {
+        mSelection = new HashMap<Integer, Boolean>();
+        notifyDataSetChanged(); }
 
 
 
@@ -137,17 +162,10 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
 
     public void actualizarAdapter(){
         ListaTrabajadorAdapter.this.notifyDataSetChanged();
-        asistencia.setText(this.controlador.totalAsistencia());
+        asistencia.setText("Asistencia: "+controlador.totalAsistencia());
     }
 
-    /////////////////////interface/////////////////////
-    @Override
-    public void onDialogPositiveClickCapturaPuestos(String descripcion) {
-
-    }
-
-    @Override
-    public void onDialogPositiveClickCapturaTrabajadores(Trabajadores trabajadores,Trabajadores trabajdorAnterior) {
+    public Controlador.TiposError capturarModificacionTrabajador(Trabajadores trabajadores,Trabajadores trabajdorAnterior){
         //actualizar trabajador
         Controlador.TiposError tiposError = controlador.updateTrabajadores(trabajadores, trabajdorAnterior);
         if(tiposError==Controlador.TiposError.EXITOSO){
@@ -159,7 +177,18 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
             }
         }
 
-        Complementos.mensajesError(controlador.getActivity(),tiposError);
+        return tiposError;
+    }
+
+    /////////////////////interface/////////////////////
+    @Override
+    public void onDialogPositiveClickCapturaPuestos(String descripcion) {
+
+    }
+
+    @Override
+    public void onDialogPositiveClickCapturaTrabajadores(Trabajadores trabajadores,Trabajadores trabajdorAnterior) {
+        Complementos.mensajesError(controlador.getActivity(),capturarModificacionTrabajador(trabajadores,trabajdorAnterior));
     }
 
     @Override

@@ -11,7 +11,8 @@
         android:textSize="@dimen/font_label_titulo"
         android:padding="10dp"
         android:gravity="center_vertical"
-        android:text="100" />
+        android:text="100"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tv_trabajador"
@@ -20,7 +21,8 @@
         android:layout_weight="3"
         android:textSize="@dimen/font_label"
         android:padding="10dp"
-        android:text="JUAN GABRIEL" />
+        android:text="JUAN GABRIEL"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tv_puesto"
@@ -28,8 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:padding="10dp"
+        android:text="PC"
         android:textSize="@dimen/font_label"
-        android:text="PC" />
+        android:textStyle="bold"/>
 
 
 </LinearLayout>

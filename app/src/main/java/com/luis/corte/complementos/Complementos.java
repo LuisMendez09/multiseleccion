@@ -23,6 +23,7 @@ public class Complementos {
     public static final String TAG_INICIO="Cortina";
     public static final String TAG_BDHANDLER = "DBHandler";
     public static final String TAG_DIALOG_MODIFICAION_PUESTO = "DialogModificacionPuestos";
+    public static final String TAG_CONTROLADOR = "Controlador";
 
     @SuppressLint("ObsoleteSdkInt")
     public  static File rutaAlmacenamiento(Context context){

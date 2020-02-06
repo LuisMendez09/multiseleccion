@@ -95,8 +95,7 @@ public class Trabajadores implements Parcelable {
 
     public boolean validarCamposVacios(){
         boolean r = true;
-        if(this.getNombre().equals("") ||this.getApellidoPaterno().equals("") ||
-        this.getApellidoMaterno().equals("") || this.getPuestosActual().getId()==1 )
+        if(this.getNombre().equals("") ||this.getApellidoPaterno().equals("") || this.getPuestosActual().getId()==1 )
             r = false;
 
         return r;

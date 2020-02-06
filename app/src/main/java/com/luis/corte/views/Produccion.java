@@ -44,8 +44,8 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
 
         setContentView(R.layout.activity_produccion);
         Toolbar toolbar = findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
+
         controlador = new Controlador(this);
         fragmentManager = getFragmentManager();
         setListenerBotones();
@@ -69,6 +69,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Cuadrilla.cerrarModal();
         switch (item.getItemId()){
             case R.id.action_addPuestos:
                 new CapturaDialogDialog(controlador, Produccion.this, null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_PUESTOS);
@@ -112,6 +113,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
     }
 
     private void setListenerBotones() {
+
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,6 +121,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
 
                 Log.i("sesion",controlador.validarInicioSesion().name());
 
+                Cuadrilla.cerrarModal();
                 switch (view.getId()){
                     case R.id.btn_produccion:
                         if(controlador.validarInicioSesion() == Controlador.TiposError.SESION_INICIADA){

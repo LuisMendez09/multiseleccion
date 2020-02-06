@@ -57,8 +57,15 @@ public class ListaReporteAdapter extends ArrayAdapter<ReporteCajasTotales> {
         tvSegunda.setText(Controlador.calcularCajas(row.getCajasSegunda(),row.getVasquetesSegunda(),true));
         tvAgranel.setText(Controlador.calcularCajas(row.getCajasAgranel(),row.getVasquetesAgranel(),false));
 
-        if((position%2)==0)
-            ((LinearLayout) convertView.findViewById(R.id.item_reporte)).setBackgroundColor(this.context.getResources().getColor(R.color.colorAccent));
+        if((position%2)==0){
+            ((LinearLayout) convertView.findViewById(R.id.item_reporte)).setBackgroundColor(this.context.getResources().getColor(R.color.colorAccentDark));
+            tvConsecutivo.setTextColor(this.context.getResources().getColor(R.color.colorFont));
+            tvTrabajar.setTextColor(this.context.getResources().getColor(R.color.colorFont));
+            tvPrimera.setTextColor(this.context.getResources().getColor(R.color.colorFont));
+            tvSegunda.setTextColor(this.context.getResources().getColor(R.color.colorFont));
+            tvAgranel.setTextColor(this.context.getResources().getColor(R.color.colorFont));
+        }
+
 
         return convertView;
     }

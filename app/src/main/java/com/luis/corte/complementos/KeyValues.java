@@ -6,7 +6,15 @@ package com.luis.corte.complementos;
 
 public final class KeyValues {
 
+    public static final String FOLDER_DATABASE = "databases";
     public static final String MY_DATABASE_NAME = "CorteDB";
+    public static final String EXTENCIO_DATABASE = ".db";
+    public static final String FOLDER_ZIP = "zip";
+    public static final String EXTENCIO_ZIP = ".zip";
+    public static final String ZIP_NAME = "archivoZip";
+    public static final String FOLDER_DOC = "doc";
+    public static final String EXTENCIO_XLS = ".xls";
+    public static final String XLS_NAME = "Produccion";
     // Database Version
     public static final int DATABASE_VERSION = 1;
     // Database Name

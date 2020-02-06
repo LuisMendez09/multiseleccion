@@ -2,10 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/menu_delete"
+        android:id="@+id/menu_falta"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|withText"
-        android:title="Delete"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Falta"
+        android:icon="@android:drawable/presence_busy"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/menu_asistencia"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|withText"
+        android:title="Asistencia"
+        android:icon="@android:drawable/presence_online"
         tools:ignore="AppCompatResource" />
 </menu>

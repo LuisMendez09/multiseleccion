@@ -118,7 +118,7 @@ public class ReporteProduccion extends Trabajadores {
 
     public Object [] getArray(){
         if(actividad==null){
-            Long dif = (this.puestos.getDateFin()-this.puestos.getDateInicio());
+            Long dif = this.puestos.getPuestos().getId()>3?(this.puestos.getDateFin()-this.puestos.getDateInicio()):0L;
             Float seg = (float)(dif/1000);
             Float minutos = seg/60;
             Float horas = minutos/60;
@@ -130,13 +130,13 @@ public class ReporteProduccion extends Trabajadores {
             Float cajasPrimera = (float)this.totalPrimera/this.actividad.getTamanioCaja().getTotalCajas();
             Float cajasSegunda = (float)this.totalSegunda/12;
             Float cajasAgranel = (float)this.totalAgranel;
-            Long dif = (this.dateMaximo-this.dateMinimo);
+            /*Long dif = this.puestos.getPuestos().getId()==3?0L:(this.dateMaximo-this.dateMinimo);
             Float seg = (float)(dif/1000);
             Float minutos = seg/60;
-            Float horas = minutos/60;
+            Float horas = minutos/60;*/
 
             return new Object[]{puestos.getFechaString(),getConsecutivo(),getTrabajador(),puestos.getPuestos().getDescripcion(),actividad!=null?actividad.getDescripcion():""
-                    ,horas,this.totalPrimera,this.totalSegunda,cajasPrimera,cajasSegunda,cajasAgranel};
+                    ,/*horas*/0,this.totalPrimera,this.totalSegunda,cajasPrimera,cajasSegunda,cajasAgranel};
         }
     }
 
