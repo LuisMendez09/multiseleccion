@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.luis.corte.Controlers.Controlador;
 import com.luis.corte.R;
 import com.luis.corte.complementos.Complementos;
+import com.luis.corte.complementos.FileLog;
 import com.luis.corte.models.ReporteProduccion;
 import com.luis.corte.models.Trabajadores;
 import com.luis.corte.views.Produccion;
@@ -78,57 +79,72 @@ public class captura_produccion extends Fragment {
                 switch (v.getId()){
                     case R.id.btn_mas:
                         //agregar produccion
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton de agregar");
                         addProduccion();
                         limpiar();
                         break;
                     case R.id.btn_menos:
                         //quitar produccion
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton de quitar");
                         removeProduccion();
                         limpiar();
                         break;
                     case R.id.btn_consulta:
                         //consultar produccion
-
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton de consulta");
                         Trabajadores t = controlador.getTrabajador(tvTrabajador.getText().toString());
                         if(t!=null){
                             limpiar();
                             actualizarDatos(t);
                         }
-                        else
+                        else{
+                            FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"Trabajador no valido");
                             Complementos.mensajesError(controlador.getActivity(), Controlador.TiposError.ERROR_TRABAJADOR_NO_VALIDO);
+                        }
                         break;
                     case R.id.btn_0:
-                        if(!tvTrabajador.getText().toString().equals(""))
+                        if(!tvTrabajador.getText().toString().equals("")){
+                            FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 0");
                             tvTrabajador.setText(tvTrabajador.getText().toString()+"0");
+                        }
                         break;
                     case R.id.btn_1:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 1");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"1");
                         break;
                     case R.id.btn_2:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 2");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"2");
                         break;
                     case R.id.btn_3:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 3");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"3");
                         break;
                     case R.id.btn_4:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 4");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"4");
                         break;
                     case R.id.btn_5:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 5");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"5");
                         break;
                     case R.id.btn_6:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 6");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"6");
                         break;
                     case R.id.btn_7:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 7");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"7");
                         break;
                     case R.id.btn_8:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 8");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"8");
                         break;
-                    case R.id.btn_9:
+                    case R.id.btn_9:FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton 9");
                         tvTrabajador.setText(tvTrabajador.getText().toString()+"9");
                         break;
                     case R.id.btn_borrar:
+                        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"preciono el boton borrar");
                         limpiar();
                         break;
 
@@ -184,6 +200,7 @@ public class captura_produccion extends Fragment {
     }
 
     public void actualizarDatos(Trabajadores trabajador){
+        FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"inicia la actualizacion en pantalla de la produccion del trabajador: "+trabajador.toString());
         ReporteProduccion reporteProduccion = controlador.getTotalProduccion(trabajador, controlador.getActividad());
         if(reporteProduccion!=null){
             this.tvTrabajador.setText("");
@@ -205,10 +222,10 @@ public class captura_produccion extends Fragment {
     }
 
     private void addProduccion(){
-        Log.i("captura",tvTrabajador.getText().toString());
         Trabajadores trabajador = controlador.getTrabajador(tvTrabajador.getText().toString());
         Controlador.TiposError tiposError = controlador.validarPrecaptura(trabajador, Complementos.getDateTimeActual());
         if(tiposError== Controlador.TiposError.EXITOSO){
+            FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"iniciar la captura de produccion");
             new CapturaDialogDialog(controlador, (Produccion) controlador.getActivity(), trabajador, CapturaDialogDialog.tiposDialogos.DIALOG_CAPTURA_PRODUCCION,true);
         }else{
             //mensaje error
@@ -222,6 +239,7 @@ public class captura_produccion extends Fragment {
         Trabajadores trabajador = controlador.getTrabajador(tvTrabajador.getText().toString());
         Controlador.TiposError tiposError = controlador.validarPrecaptura(trabajador, Complementos.getDateTimeActual());
         if(tiposError== Controlador.TiposError.EXITOSO){
+            FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION,"iniciar la captura de resta de produccion");
             new CapturaDialogDialog(controlador, (Produccion) controlador.getActivity(), trabajador, CapturaDialogDialog.tiposDialogos.DIALOG_CAPTURA_PRODUCCION,false);
         }else{
             //mensaje error

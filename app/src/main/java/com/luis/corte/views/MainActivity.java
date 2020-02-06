@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.MenuInflater;
 import android.view.View;
@@ -29,17 +28,12 @@ import com.luis.corte.views.adaptadores.ListaTrabajadorAdapter;
 import com.luis.corte.complementos.Complementos;
 import com.luis.corte.complementos.FileLog;
 import com.luis.corte.views.dialogForm.CapturaDialogDialog;
-import com.luis.corte.views.dialogForm.DialogListaPuestos;
 import com.luis.corte.views.dialogForm.InterfaceDialogs;
 import com.luis.corte.models.CatalogoActividades;
 import com.luis.corte.models.CatalogoCajas;
 import com.luis.corte.models.CatalogoPuestos;
 import com.luis.corte.models.Trabajadores;
-import com.luis.corte.views.fragment.Cuadrilla;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements InterfaceDialogs {
@@ -59,12 +53,14 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
 
         controlador = new Controlador(this);
 
+        FileLog.i(Complementos.TAG_MAIN,"inicia pase de asistencia");
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cerrarModal();
-                FileLog.i(Complementos.TAG_MAIN,"Agregar nuevo trabajador");
+                FileLog.i(Complementos.TAG_MAIN,"inicia captura nuevo trabajador");
                 new CapturaDialogDialog(controlador, MainActivity.this, null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TRABAJADOR);
             }
         });
@@ -105,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
                 ListView itemsMenu = new ListView(controlador.getActivity());
                 String items [] = new String[]{"EDITAR TRABAJADOR"};
 
-
-
                 ArrayAdapter<String> adapterMenu = new ArrayAdapter<>(controlador.getActivity(),android.R.layout.simple_list_item_1,android.R.id.text1,items);
                 itemsMenu.setAdapter(adapterMenu);
                 menu.setView(itemsMenu);
@@ -119,19 +113,15 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
                         if(position==0){
                             Controlador.TiposError tiposError = controlador.validarInicioSesion();
                             if(tiposError== Controlador.TiposError.SESION_INICIADA || tiposError== Controlador.TiposError.SESION_REINIADA){
+                                FileLog.i(Complementos.TAG_MAIN,"inicia captura modificacion del trabajador: "+trabajadores.toString());
                                 new CapturaDialogDialog(controlador, adaptadorTrabajadores,trabajadores, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TRABAJADOR);
                             }else{
                                 Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);
                             }
-                        }else{
-                            DialogListaPuestos dmp = new DialogListaPuestos(controlador.getActivity());
-                            dmp.setPuestos(controlador.getPuestosTrabajador(trabajadores),trabajadores, MainActivity.this.controlador,adaptadorTrabajadores);
-                            dmp.show();
                         }
                         dialog.dismiss();
                     }
                 });
-
             }
         });
     }
@@ -175,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
                 Set<Integer> currentCheckedPosition = adaptadorTrabajadores.getCurrentCheckedPosition();
                 switch (item.getItemId()) {
                     case R.id.menu_falta:
+                        FileLog.i(Complementos.TAG_MAIN,"iniciar captura de falta multiseleccion");
                         for (Integer posicion : currentCheckedPosition) {
                             Trabajadores trabajador = adaptadorTrabajadores.getItem(posicion);
                             if(trabajador.getPuestosActual().getId()>2){
@@ -191,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
                         }
                         break;
                     case R.id.menu_asistencia:
+                        FileLog.i(Complementos.TAG_MAIN,"iniciar captura de asistencia multiseleccion");
                         for (Integer posicion : currentCheckedPosition) {
                             Trabajadores trabajador = adaptadorTrabajadores.getItem(posicion);
                             if(trabajador.getPuestosActual().getId()==2){
@@ -225,12 +217,12 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
 
 
     }
-
+/*
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        adaptadorTrabajadores.getSelectedItem(item);
+        //adaptadorTrabajadores.getSelectedItem(item);
         return super.onContextItemSelected(item);
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -263,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
                 new CapturaDialogDialog(controlador,MainActivity.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_CONFIGURACION);
                 break;
             case R.id.action_importar:
+                FileLog.i(Complementos.TAG_MAIN,"iniciar la importacion de trabajadores");
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("application/vnd.ms-excel");
@@ -277,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
         Uri uri = null;
         if (data != null) {
             uri = data.getData();
-            FileLog.i(Complementos.TAG_MAIN, "seleccion de archivo Uri: " + uri.getPath());
+            FileLog.i(Complementos.TAG_MAIN, "archivo seleccionado Uri: " + uri.getPath());
             Controlador.TiposError tiposError = this.controlador.importarTrabajadores(uri);
             tvAsistencia.setText("Asistencia: "+controlador.totalAsistencia());
             adaptadorTrabajadores.notifyDataSetChanged();
@@ -287,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
 
     @Override
     public void onDialogPositiveClickCapturaTrabajadores(Trabajadores trabajadores,Trabajadores trabajadoresAnterior) {
-        FileLog.i(Complementos.TAG_MAIN,"guardar datos del trabajador");
+        FileLog.i(Complementos.TAG_MAIN,"guardar datos del nuevo trabajador: "+trabajadores.toString());
         adaptadorTrabajadores.add(trabajadores);
         adaptadorTrabajadores.notifyDataSetChanged();
         tvAsistencia.setText("Asistencia: "+controlador.totalAsistencia());
@@ -296,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceDialogs 
     @Override
     public void onDialogPositiveClickSeleccionActividad(CatalogoActividades catalogoActividades) {
         if(catalogoActividades!=null){
-            FileLog.i(Complementos.TAG_MAIN,"Iniciar sesion para la captura de produccion");
+            FileLog.i(Complementos.TAG_MAIN,"actividad seleccionada: "+catalogoActividades.toString1());
             controlador.iniciarSession(catalogoActividades);
             Intent intent = new Intent(MainActivity.this, Produccion.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);

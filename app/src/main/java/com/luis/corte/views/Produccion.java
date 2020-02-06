@@ -42,6 +42,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        FileLog.i(Complementos.TAG_PRODUCCION,"inicia ventana de produccion");
         setContentView(R.layout.activity_produccion);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -50,15 +51,6 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
         fragmentManager = getFragmentManager();
         setListenerBotones();
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Implementar metodo de cierre de aplicacion si las fecha actual no concuerdan con la del la app
-        Log.i("inicio", "onStart "+ Complementos.getDateTimeActual().toString() );
-    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -72,15 +64,19 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
         Cuadrilla.cerrarModal();
         switch (item.getItemId()){
             case R.id.action_addPuestos:
+                FileLog.i(Complementos.TAG_PRODUCCION,"Agregar nuevo puesto");
                 new CapturaDialogDialog(controlador, Produccion.this, null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_PUESTOS);
                 break;
             case R.id.action_addActividades:
+                FileLog.i(Complementos.TAG_PRODUCCION,"Agregar nueva actividad");
                 new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_ACTIVIDADES);
                 break;
             case R.id.action_addCajas:
+                FileLog.i(Complementos.TAG_PRODUCCION,"Agregar nueva tipo de caja");
                 new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TAMANIO_CAJAS);
                 break;
             case R.id.action_CambiarActividad:
+                FileLog.i(Complementos.TAG_PRODUCCION,"Agregar cambio de actividad");
                 if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_CAMBIO_ACTIVIDAD);
                 }else{
@@ -88,6 +84,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
                 }
             break;
             case R.id.action_cambiarPuestos:
+                FileLog.i(Complementos.TAG_PRODUCCION,"Agregar cambio de puesto");
                 if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_CAPTURA_NUMERO_TRABAJADOR);
                 }else{
@@ -95,6 +92,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
                 }
                 break;
             case R.id.action_finzalir:
+                FileLog.i(Complementos.TAG_PRODUCCION,"Inicia cierre de sesion");
                 if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_FINALIZAR_JORNADA);
                 }else{
@@ -102,10 +100,12 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
                 }
                 break;
             case R.id.action_exportar:
+                FileLog.i(Complementos.TAG_PRODUCCION,"inicia exportacion de datos");
                 new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_ENVIAR_CORREO);
                 //controlador.enviarCorreo();
                 break;
             case R.id.action_configuracion:
+                FileLog.i(Complementos.TAG_PRODUCCION,"inicia configuracion de la app");
                 new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_CONFIGURACION);
                 break;
         }
@@ -119,11 +119,10 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
             public void onClick(View view) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                Log.i("sesion",controlador.validarInicioSesion().name());
-
                 Cuadrilla.cerrarModal();
                 switch (view.getId()){
                     case R.id.btn_produccion:
+                        FileLog.i(Complementos.TAG_PRODUCCION,"inicia fragment produccion");
                         if(controlador.validarInicioSesion() == Controlador.TiposError.SESION_INICIADA){
                             fragmentTransaction.replace(R.id.fragment,new captura_produccion(),"frag_produccion");
                             fragmentTransaction.commit();
@@ -132,21 +131,25 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
                         }
                         break;
                     case R.id.btn_cuadrilla:
+                        FileLog.i(Complementos.TAG_PRODUCCION,"inicia fragment cuadrilla");
                         Cuadrilla c = new Cuadrilla();
                         c.setControlador(controlador);
                         fragmentTransaction.replace(R.id.fragment,c,"frag_cuadrilla");
                         fragmentTransaction.commit();
                         break;
                     case R.id.btn_reporte:
+                        FileLog.i(Complementos.TAG_PRODUCCION,"inicia fragment reporte");
                         reporte r = new reporte();
                         r.setControlador(controlador);
                         fragmentTransaction.replace(R.id.fragment,r,"frag_reporte");
                         fragmentTransaction.commit();
                         break;
                     case R.id.btn_enviar:
+                        FileLog.i(Complementos.TAG_PRODUCCION,"inicia exportacion de datos");
                         new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_ENVIAR_CORREO);
                         break;
                     case R.id.btn_finalizar:
+                        FileLog.i(Complementos.TAG_PRODUCCION,"Inicia cierre de sesion");
                         if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                             new CapturaDialogDialog(controlador,Produccion.this,null, CapturaDialogDialog.tiposDialogos.DIALOG_FINALIZAR_JORNADA);
                         }else{
@@ -181,10 +184,8 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
 
     @Override
     public void onDialogPositiveClickCambiarPuesto(Integer consecutivo, CatalogoPuestos catalogoPuestos, String horaCambio) {
-        FileLog.e("produccion_cambio",consecutivo+" || "+catalogoPuestos.getDescripcion()+" || "+horaCambio);
-
+        FileLog.e(Complementos.TAG_PRODUCCION,"agregar cambio de puesto: "+consecutivo+"--"+catalogoPuestos.getDescripcion()+"--"+horaCambio);
         Controlador.TiposError tiposError = controlador.cambiarPuesto(consecutivo, catalogoPuestos, horaCambio);
-
 
         if(tiposError==Controlador.TiposError.EXITOSO){
             Cuadrilla frag_cuadrilla = (Cuadrilla)fragmentManager.findFragmentByTag("frag_cuadrilla");
@@ -197,6 +198,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
 
     @Override
     public void onDialogPositiveClickCambiarActividad(CatalogoActividades catalogoActividades) {
+        FileLog.i(Complementos.TAG_PRODUCCION,"inicia cambio de actividad:"+catalogoActividades.toString());
         Controlador.TiposError tiposError = controlador.cambiarActividad(catalogoActividades);
         if(tiposError == Controlador.TiposError.EXITOSO){
             Fragment fragment = fragmentManager.findFragmentByTag("frag_produccion");
@@ -210,18 +212,21 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
 
     @Override
     public void onDialogPositiveClickCapturaPuestos(String descripcion) {
+        FileLog.i(Complementos.TAG_PRODUCCION,"guardar los datos del nuevo puesto");
         Controlador.TiposError tiposError = controlador.setCategoriaPuestos(new CatalogoPuestos(descripcion));
         Complementos.mensajesError(controlador.getActivity(),tiposError);
     }
 
     @Override
     public void onDialogPositiveClickCapturaTamanioCajas(String descripcion, Integer cantidad) {
+        FileLog.i(Complementos.TAG_MAIN,"guardar los datos de la nueva caja");
         Controlador.TiposError tiposError = controlador.setCatalogoTamanioCajas(new CatalogoCajas(descripcion,cantidad));
         Complementos.mensajesError(controlador.getActivity(),tiposError);
     }
 
     @Override
     public void onDialogPositiveClickCapturaActividad(String descripcion, CatalogoCajas tamanioCaja) {
+        FileLog.i(Complementos.TAG_MAIN,"guardar los datos de la nueva actividad");
         Controlador.TiposError tiposError = controlador.setCatalogoActividades(new CatalogoActividades(descripcion,tamanioCaja));
         Complementos.mensajesError(controlador.getActivity(),tiposError);
     }
@@ -231,18 +236,19 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
 
         Controlador.TiposError tiposError = null;
 
-        if(addProduccion)
-             tiposError = controlador.addProduccion(producto);
-        else
+        if(addProduccion){
+            FileLog.i(Complementos.TAG_MAIN,"inicia guardado de produccion");
+            tiposError = controlador.addProduccion(producto);
+        }else{
+            FileLog.i(Complementos.TAG_MAIN,"inicia resta de produccion");
             tiposError = controlador.deleteProduccion(producto);
-
+        }
 
         if(tiposError == Controlador.TiposError.EXITOSO){
             Fragment fragment = fragmentManager.findFragmentByTag("frag_produccion");
             if(fragment!=null){
                 ((captura_produccion) fragment).actualizarDatos(producto);
             }
-
         }else{
             Complementos.mensajesError(this,tiposError);
         }
@@ -250,6 +256,7 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
 
     @Override
     public void onDialogPositiveClickFinalizarJornada() {
+        FileLog.i(Complementos.TAG_MAIN,"inicia petinicion de finalizacion de jornada");
         Controlador.TiposError tiposError = controlador.finalizarSesion();
 
         if(tiposError == Controlador.TiposError.EXITOSO){
@@ -261,14 +268,15 @@ public class Produccion extends AppCompatActivity implements InterfaceDialogs {
                 fragmentTransaction.replace(R.id.fragment,r,"frag_reporte");
                 fragmentTransaction.commit();
             }
-
+        }else{
+            Complementos.mensajesError(controlador.getActivity(),tiposError);
         }
     }
 
     @Override
     public void onDialogPositiveClickConfiguracion(Configuracion configuracion, Configuracion configuracionAnterior) {
+        FileLog.i(Complementos.TAG_PRODUCCION,"inicia peticion de guardado de configuraciones");
         Controlador.TiposError tiposError = controlador.addConfiguracion(configuracion, configuracionAnterior);
-        Log.i("EMAIL",controlador.getConfiguracion().toString());
         Complementos.mensajesError(this,tiposError);
     }
 }

@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.luis.corte.Controlers.Controlador;
 import com.luis.corte.R;
+import com.luis.corte.complementos.Complementos;
+import com.luis.corte.complementos.FileLog;
 import com.luis.corte.models.Trabajadores;
 import com.luis.corte.views.adaptadores.ListaReporteDetalleAdapter;
 
@@ -29,6 +31,7 @@ public class DialogDetalleProduccion extends AlertDialog {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FileLog.i(Complementos.TAG_DIALOGOS,"inicia dialog DialogDetalleProduccion");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_detalle_produccion);
         setCancelable(false);
@@ -56,6 +59,7 @@ public class DialogDetalleProduccion extends AlertDialog {
         btn_salir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog DialogDetalleProduccion");
                 dismiss();
             }
         });

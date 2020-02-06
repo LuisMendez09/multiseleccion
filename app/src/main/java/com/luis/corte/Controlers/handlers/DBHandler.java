@@ -372,7 +372,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     //añadir configuracion
     public Long addConfiguracion(Configuracion configuracion) {
-        FileLog.v(Complementos.TAG_BDHANDLER,"AÑADIR CONFIGURACION "+configuracion.toString());
+        FileLog.i(Complementos.TAG_BDHANDLER,"AÑADIR CONFIGURACION "+configuracion.toString());
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -469,7 +469,7 @@ public class DBHandler extends SQLiteOpenHelper {
             if(insert !=-1)
                 trabajadores.setIdTrabajdor(insert);
             else
-                FileLog.v(Complementos.TAG_BDHANDLER,"ERROR DE INSERSION ");
+                FileLog.i(Complementos.TAG_BDHANDLER,"ERROR DE INSERSION ");
             db.close(); // Closing database connection
             return insert;
         }catch (NullPointerException e){
@@ -507,7 +507,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     //añadir produccion
     public Long addProduccion(Producto produccion){
-        FileLog.v(Complementos.TAG_BDHANDLER,"AÑADIR TRABAJADOR "+produccion.toString());
+        FileLog.v(Complementos.TAG_BDHANDLER,"AÑADIR PRODUCCION "+produccion.toString());
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -628,7 +628,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // Getting categorias actividades
     public ArrayList<CatalogoActividades> getCatalogoActividades() {
-
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia conusulta de catalogo de actividades");
         ArrayList<CatalogoActividades>  catalogoActividades = new ArrayList<CatalogoActividades>();
         // Select All Query
         String selectQuery = "SELECT * FROM " + TABLE_CATOLOGO_ACTIVIDADES ;
@@ -674,6 +674,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return Lista de catalogo de puestos
      */
     public ArrayList<CatalogoPuestos> getCatalogoPuestos(){
+        FileLog.i(Complementos.TAG_BDHANDLER,"Inicia consulta de catalogo de puesto");
         ArrayList<CatalogoPuestos> catalogo = new ArrayList<>();
         String selectQuery = "SELECT * FROM "+TABLE_CATOLOGO_PUESTOS;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -689,7 +690,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        FileLog.v(Complementos.TAG_BDHANDLER,"lista puestos "+catalogo.size());
+        FileLog.v(Complementos.TAG_BDHANDLER,"catalogo de puestos "+catalogo.size());
         return catalogo;
     }
 
@@ -724,7 +725,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return arrayList de Trabajadores
      */
     public ArrayList<Trabajadores> getTrabajdores() {
-
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia peticion de trabajadores");
         ArrayList<Trabajadores> listaTrabajadores = new ArrayList<Trabajadores>();
         // Select All Query
         String selectQuery = "SELECT * FROM " + TABLE_TRABAJADORES +" ORDER BY "+KEY_CONSECUTIVO_TRABAJADORES ;
@@ -741,7 +742,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        FileLog.v(Complementos.TAG_BDHANDLER,"total trabajadores "+listaTrabajadores.size());
+        FileLog.i(Complementos.TAG_BDHANDLER,"total trabajadores "+listaTrabajadores.size());
         return listaTrabajadores;
     }
 
@@ -831,7 +832,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public ArrayList<Puestos> getPuestosTrabajador(String fecha,Trabajadores trabajadores) {
-
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia consulta de lista de puestos de la fecha "+fecha+" del trabajador "+trabajadores.toString());
         ArrayList<Puestos> puestos = new ArrayList<Puestos>();
         // Select All Query
         String selectQuery = "SELECT * FROM " + TABLE_PUESTOS +" WHERE "+KEY_ENVIADO_PUESTOS +" = 0 AND "+KEY_FECHASTRING_PUESTOS+"='"+fecha
@@ -863,7 +864,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return null si no se enccuentra puestos de otra forma retorna el ultimo puestos del trabajador
      */
     public Puestos getUltimoPuesto(String fecha,Trabajadores trabajadores) {
-
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia peticion del ultimo puesto de la fecha: "+fecha+" trabajador: "+trabajadores.toString());
         Puestos puestos = null;
         // Select All Query
         String selectQuery = "SELECT * FROM " + TABLE_PUESTOS
@@ -884,13 +885,13 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
 
         if(puestos!=null)
-            FileLog.v(Complementos.TAG_BDHANDLER,"total Producto "+puestos.toString());
+            FileLog.v(Complementos.TAG_BDHANDLER,"ultimo puestos "+puestos.toString());
 
         return puestos;
     }
 
     public Producto getUltimoResgistroProduccion(Trabajadores trabajadores,String fecha) {
-
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia consulta de ultimo registro de produccion de la fecha "+fecha+" del trabajador "+trabajadores);
         Producto produccion = null;
         // Select All Query
         String selectQuery = "SELECT * FROM " + TABLE_PRODUCCION +" WHERE "+KEY_IDTRABAJADOR_PRODUCCION +" = "+trabajadores.getIdTrabajdor() +" AND "+KEY_FECHASTRING_PRODUCCION+" = '"+ fecha+"' order by "+KEY_DATE_PRODUCCION +" DESC limit 1";
@@ -909,7 +910,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
 
         if(produccion!=null)
-            FileLog.v(Complementos.TAG_BDHANDLER,"total Vehiculos "+produccion.toString());
+            FileLog.v(Complementos.TAG_BDHANDLER,"produccion: "+produccion.toString());
 
         return produccion;
     }
@@ -977,6 +978,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return
      */
     public ReporteProduccion getTotalProduccionTrabajador(Trabajadores trabajador, CatalogoActividades actividad , String fecha) {
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia consulta del total de produccion de la fecha "+fecha+"de la actividad "+actividad.toString1()+" del trabajador: "+trabajador.toString());
         ReporteProduccion reporte = null;
         // Select All Query
         String selectQuery = "SELECT "+KEY_ID_TRABAJADORES+","+KEY_IDACTIVIDAD_PRODUCCION+", SUM("+KEY_PRIMERA_PRODUCCION+"),SUM("+KEY_SEGUNDA_PRODUCCION+"),SUM("+KEY_AGRANEL_PRODUCCION+")" +
@@ -991,7 +993,7 @@ public class DBHandler extends SQLiteOpenHelper {
             do {
                 // Adding contact to list
                 reporte = new ReporteProduccion(cursor,trabajador,actividad);
-                FileLog.v(Complementos.TAG_BDHANDLER,"Recargas sin enviar "+reporte.toString());
+                FileLog.v(Complementos.TAG_BDHANDLER,"produccion "+reporte.toString());
             } while (cursor.moveToNext());
         }
         // return contact list
@@ -1008,11 +1010,13 @@ public class DBHandler extends SQLiteOpenHelper {
      */
     public ArrayList<ReporteProduccion> getReporte(String fecha,Trabajadores trabajador) {
         ArrayList<ReporteProduccion> reporte = new ArrayList<>();
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia consulta de produccion de la fecha: "+fecha);
         // Select All Query
         String selectQuery = "SELECT "+KEY_IDTRABAJADOR_PRODUCCION+","+KEY_IDACTIVIDAD_PRODUCCION+",SUM("+KEY_PRIMERA_PRODUCCION+"),SUM("+KEY_SEGUNDA_PRODUCCION+"),SUM("+KEY_AGRANEL_PRODUCCION+")" +
                 " FROM " + TABLE_PRODUCCION + " WHERE " + KEY_ENVIADO_PRODUCCION + " = 0 AND "+KEY_FECHASTRING_PRODUCCION+" = '"+fecha+"' " ;
 
         if(trabajador!=null){
+            FileLog.i(Complementos.TAG_BDHANDLER,"filtrar produccion por el trabjador "+trabajador.toString());
             selectQuery=selectQuery +" AND "+KEY_IDTRABAJADOR_PRODUCCION+" = "+trabajador.getIdTrabajdor();
         }
         selectQuery=selectQuery+" GROUP BY "+KEY_IDTRABAJADOR_PRODUCCION+","+KEY_IDACTIVIDAD_PRODUCCION+","+KEY_FECHASTRING_PRODUCCION
@@ -1032,7 +1036,7 @@ public class DBHandler extends SQLiteOpenHelper {
         // return contact list
         cursor.close();
         db.close();
-        FileLog.v(Complementos.TAG_BDHANDLER,"Recargas sin enviar "+reporte.size());
+        FileLog.i(Complementos.TAG_BDHANDLER,"total registros de produccion "+reporte.size());
         return reporte;
     }
 
@@ -1044,7 +1048,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return -1 si la actualziacion fallo de los contrario retorna el numero de filas actualizadas
      */
     public int updateConfiguracion(Configuracion configuracion){
-        FileLog.v(Complementos.TAG_BDHANDLER,"ACTUALIZAR CONFIGURACION="+configuracion.getId());
+        FileLog.i(Complementos.TAG_BDHANDLER,"ACTUALIZAR CONFIGURACION="+configuracion.toString());
         int i = -1;
         try{
             SQLiteDatabase db = this.getWritableDatabase();
@@ -1073,7 +1077,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return -1 si la actualziacion fallo de los contrario retorna el numero de filas actualizadas
      */
     public int updateSetting(Settings settings){
-        FileLog.v(Complementos.TAG_BDHANDLER,"ACTUALIZAR SETTING "+settings.getId());
+        FileLog.v(Complementos.TAG_BDHANDLER,"ACTUALIZAR SETTING "+settings.toString());
         int i = -1;
         try{
             SQLiteDatabase db = this.getWritableDatabase();
@@ -1106,7 +1110,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return -1 si la actualziacion fallo de los contrario retorna el numero de filas actualizadas
      */
     public int updatePuestos(Puestos puestos){
-        FileLog.v(Complementos.TAG_BDHANDLER,puestos.toString());
+        FileLog.i(Complementos.TAG_BDHANDLER,"Actualizacion de puesto "+puestos.toString());
         int i = -1;
         try{
             SQLiteDatabase db = this.getWritableDatabase();
@@ -1126,7 +1130,7 @@ public class DBHandler extends SQLiteOpenHelper {
             i = db.update(TABLE_PUESTOS, values, KEY_ID_PUESTOS + " = ?",new String[]{String.valueOf(puestos.getId().toString())});
             db.close();
         }catch (Exception e){
-            FileLog.v(Complementos.TAG_BDHANDLER,"error "+e.getMessage());
+            FileLog.i(Complementos.TAG_BDHANDLER,"error "+e.getMessage());
         }
         return i;
     }
@@ -1154,7 +1158,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return -1 si la actualziacion fallo de los contrario retorna el numero de filas actualizadas
      */
     public int updateProduccion(Producto produccion){
-        FileLog.v(Complementos.TAG_BDHANDLER,produccion.toString());
+        FileLog.v(Complementos.TAG_BDHANDLER,"update "+produccion.toString());
         int i = -1;
         try{
             SQLiteDatabase db = this.getWritableDatabase();
@@ -1204,7 +1208,7 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return -1 si la actualziacion fallo de los contrario retorna el numero de filas actualizadas
      */
     public int updateTrabajdores(Trabajadores trabajadores){
-        FileLog.v(Complementos.TAG_BDHANDLER,trabajadores.toString());
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia consulta de actualizacion "+trabajadores.toString());
 
         int i = -1;
         try{
@@ -1221,9 +1225,8 @@ public class DBHandler extends SQLiteOpenHelper {
                     new String[]{String.valueOf(trabajadores.getIdTrabajdor().toString())});
             db.close();
 
-            FileLog.i("verificacionHora",i+"--"+trabajadores.toString());
         }catch (Exception e){
-            FileLog.v(Complementos.TAG_BDHANDLER,"error "+e.getMessage());
+            FileLog.i(Complementos.TAG_BDHANDLER,"error "+e.getMessage());
         }
         return i;
     }

@@ -5,11 +5,8 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.AppCompatCheckedTextView;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.ActionMode;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
@@ -27,19 +23,18 @@ import android.support.v7.widget.Toolbar;
 import com.luis.corte.Controlers.Controlador;
 import com.luis.corte.R;
 import com.luis.corte.complementos.Complementos;
+import com.luis.corte.complementos.FileLog;
 import com.luis.corte.models.CatalogoActividades;
 import com.luis.corte.models.CatalogoCajas;
 import com.luis.corte.models.CatalogoPuestos;
 import com.luis.corte.models.Configuracion;
 import com.luis.corte.models.Producto;
 import com.luis.corte.models.Trabajadores;
-import com.luis.corte.views.Produccion;
 import com.luis.corte.views.adaptadores.ListaTrabajadorAdapter;
 import com.luis.corte.views.dialogForm.CapturaDialogDialog;
 import com.luis.corte.views.dialogForm.DialogListaPuestos;
 import com.luis.corte.views.dialogForm.InterfaceDialogs;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 
@@ -48,14 +43,12 @@ import java.util.Set;
  */
 public class Cuadrilla extends Fragment implements InterfaceDialogs {
     private Controlador controlador;
-    private static final String TAG = "Cuadrilla";
 
     ListaTrabajadorAdapter adaptadorTrabajadores;
     public TextView tvAsistencia;
     ListView lvTrabajadores;
     Toolbar toolbar;
     AbsListView.MultiChoiceModeListener multiseleccion;
-
 
     public static ActionMode mode;
     public Cuadrilla(){}
@@ -100,6 +93,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         if(position==0){
+                            FileLog.i(Complementos.TAG_CUADRILLA,"inicia dialogo de edicion de trabajador");
                             Controlador.TiposError tiposError = controlador.validarInicioSesion();
                             if(tiposError== Controlador.TiposError.SESION_INICIADA || tiposError== Controlador.TiposError.SESION_REINIADA){
                                 new CapturaDialogDialog(controlador, adaptadorTrabajadores,trabajadores, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TRABAJADOR);
@@ -107,6 +101,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
                                 Complementos.mensajesError(controlador.getActivity(),Controlador.TiposError.SESION_FINALIZADA);
                             }
                         }else{
+                            FileLog.i(Complementos.TAG_CUADRILLA,"inicia dialogo de puestos realizados");
                             DialogListaPuestos dmp = new DialogListaPuestos(controlador.getActivity());
                             dmp.setPuestos(controlador.getPuestosTrabajador(trabajadores),trabajadores,Cuadrilla.this.controlador,adaptadorTrabajadores);
                             dmp.show();
@@ -125,6 +120,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
             @Override
             public void onClick(View view) {
                 cerrarModal();
+                FileLog.i(Complementos.TAG_CUADRILLA,"inicia dialogo de captura de trabajador");
                 if(controlador.validarInicioSesion()== Controlador.TiposError.SESION_INICIADA){
                     new CapturaDialogDialog(controlador, Cuadrilla.this, null, CapturaDialogDialog.tiposDialogos.DIALOG_ADD_TRABAJADOR);
                 }else{
@@ -177,6 +173,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
                 Set<Integer> currentCheckedPosition = adaptadorTrabajadores.getCurrentCheckedPosition();
                 switch (item.getItemId()) {
                     case R.id.menu_falta:
+                        FileLog.i(Complementos.TAG_MAIN,"iniciar captura de falta multiseleccion");
                         for (Integer posicion : currentCheckedPosition) {
                             Trabajadores trabajador = adaptadorTrabajadores.getItem(posicion);
                             Trabajadores trabajadorAnterior = new Trabajadores(trabajador);
@@ -191,6 +188,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
                         }
                     break;
                     case R.id.menu_asistencia:
+                        FileLog.i(Complementos.TAG_MAIN,"iniciar captura de asistencia multiseleccion");
                         for (Integer posicion : currentCheckedPosition) {
                             Trabajadores trabajador = adaptadorTrabajadores.getItem(posicion);
                             Trabajadores trabajadorAnterior = new Trabajadores(trabajador);
@@ -230,7 +228,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -240,7 +238,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
@@ -248,7 +246,6 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Log.i("menuItem",item.toString());
         adaptadorTrabajadores.getSelectedItem(item);
         return super.onContextItemSelected(item);
     }
@@ -261,21 +258,22 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
 
     @Override
     public void onDialogPositiveClickCapturaPuestos(String descripcion) {
-
+//no implentar
     }
 
     @Override
     public void onDialogPositiveClickCapturaTamanioCajas(String descripcion, Integer cantidad) {
-
+//no implentar
     }
 
     @Override
     public void onDialogPositiveClickCapturaActividad(String descripcion, CatalogoCajas tamanioCaja) {
-
+//no implentar
     }
 
     @Override
     public void onDialogPositiveClickCapturaTrabajadores(Trabajadores trabajadores, Trabajadores trabajadorAnterior) {
+        FileLog.i(Complementos.TAG_CUADRILLA,"iniciar guardado de trabajador nuevo");
         adaptadorTrabajadores.add(trabajadores);
         adaptadorTrabajadores.notifyDataSetChanged();
         tvAsistencia.setText("Asistencia: "+controlador.totalAsistencia());
@@ -283,30 +281,31 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
 
     @Override
     public void onDialogPositiveClickSeleccionActividad(CatalogoActividades catalogoActividades) {
-
+//no implentar
     }
 
     @Override
     public void onDialogPositiveClickCapturarProduccion(Producto producto, Boolean addProduccion) {
-
+//no implentar
     }
 
     @Override
     public void onDialogPositiveClickCambiarPuesto(Integer consecutivo, CatalogoPuestos catalogoPuestos, String horaCambio) {
-
+//no implentar
     }
 
     @Override
     public void onDialogPositiveClickCambiarActividad(CatalogoActividades catalogoActividades) {
-
+//no implentar
     }
 
     @Override
     public void onDialogPositiveClickFinalizarJornada() {
+        //no implentar
     }
 
     @Override
     public void onDialogPositiveClickConfiguracion(Configuracion configuracion, Configuracion configuracionAnterior) {
-
+//no implentar
     }
 }

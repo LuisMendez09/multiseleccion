@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.luis.corte.Controlers.Controlador;
 import com.luis.corte.R;
 import com.luis.corte.complementos.Complementos;
+import com.luis.corte.complementos.FileLog;
 import com.luis.corte.models.Puestos;
 import com.luis.corte.models.Trabajadores;
 import com.luis.corte.views.adaptadores.ListaPuestosAdaptar;
@@ -43,6 +44,8 @@ public class DialogListaPuestos extends AlertDialog {
         setContentView(R.layout.dialog_detalle_puestos);
         setCancelable(false);
         setCanceledOnTouchOutside(false);
+
+        FileLog.i(Complementos.TAG_DIALOGOS,"inicia dialog DialogListaPuestos");
 
         final ListView lv = (ListView) findViewById(R.id.lv_lista_puestos);
         listaPuestosAdaptar =new ListaPuestosAdaptar(this.getContext(),puestos);

@@ -17,6 +17,7 @@ import android.widget.TimePicker;
 
 import com.luis.corte.Controlers.Controlador;
 import com.luis.corte.R;
+import com.luis.corte.complementos.FileLog;
 import com.luis.corte.models.Configuracion;
 import com.luis.corte.models.Producto;
 import com.luis.corte.views.MainActivity;
@@ -129,7 +130,6 @@ public class CapturaDialogDialog {
     private AlertDialog dialogoCapturaTrabajadores(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener, final Trabajadores trabajadores) {
         @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_add_trabajador,null);
 
-
         et_nombre = viewDialog.findViewById(R.id.etNombre);
         et_apellidoPaterno = viewDialog.findViewById(R.id.etApellidoPaterno);
         et_apellidoMaterno = viewDialog.findViewById(R.id.etApellidoMaterno);
@@ -158,12 +158,12 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion insersion o actualizacion de trabajador");
                         Trabajadores trabajador = new Trabajadores(0,et_nombre.getText().toString(),et_apellidoPaterno.getText().toString(),et_apellidoMaterno.getText().toString(),(CatalogoPuestos) sp_puesto.getSelectedItem());
 
                         if(trabajadores!=null){//si no es null entonses es una modificacion del trabajador
                             trabajador.setIdTrabajdor(trabajadores.getIdTrabajdor());
                             trabajador.setConsecutivo(trabajadores.getConsecutivo());
-
                         }
 
                         respuestaDialogListener.onDialogPositiveClickCapturaTrabajadores(trabajador,trabajadores);
@@ -174,6 +174,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialogo "+ tiposDialogos.DIALOG_ADD_TRABAJADOR);
                         dialogInterface.dismiss();
                     }
                 });
@@ -190,6 +191,7 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de insersion de captura puestos");
                         if(!et_descripcionPuestos.getText().toString().equals("")){
                             respuestaDialogListener.onDialogPositiveClickCapturaPuestos(et_descripcionPuestos.getText().toString());
                             dialogInterface.dismiss();
@@ -203,6 +205,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialogo "+tiposDialogos.DIALOG_ADD_PUESTOS);
                         dialogInterface.dismiss();
                     }
                 });
@@ -226,6 +229,8 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de insersion de Actividad");
+
                         if(!et_descripcionActividad.getText().toString().equals("") && sp_tamanioCajas.getSelectedItemPosition()!= 0){
                             respuestaDialogListener.onDialogPositiveClickCapturaActividad(et_descripcionActividad.getText().toString(),((CatalogoCajas)sp_tamanioCajas.getSelectedItem()));
                             dialogInterface.dismiss();
@@ -238,6 +243,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_ADD_ACTIVIDADES);
                         dialogInterface.dismiss();
                     }
                 });
@@ -256,6 +262,7 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de insersion de cajas");
                         if(!et_descripcionTamanioCajas.getText().toString().equals("") && !et_CantindadTamanioCajas.getText().toString().equals("")){
                             respuestaDialogListener.onDialogPositiveClickCapturaTamanioCajas(et_descripcionTamanioCajas.getText().toString(),Integer.parseInt(et_CantindadTamanioCajas.getText().toString()));
                             dialogInterface.dismiss();
@@ -268,6 +275,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_ADD_TAMANIO_CAJAS);
                         dialogInterface.dismiss();
                     }
                 });
@@ -277,39 +285,32 @@ public class CapturaDialogDialog {
     }
 
     private AlertDialog dialogoSeleccionActividades(AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
-        //View viewDialog = layoutInflater.inflate(R.layout.dialog_add_actividades,null);
-        final CharSequence[] selectedItems = controlador.getListaActividadesArray();  // Where we track the selected items
+        final CharSequence[] selectedItems = controlador.getListaActividadesArray();
 
-        //tv_descripcionActividad = (EditText) viewDialog.findViewById(R.id.dtv_actividad);
-
-        builder//.setView(viewDialog)
-                .setSingleChoiceItems(selectedItems, 0, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(selectedItems, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.e("solo"," "+i);
                         indexActividad = i;
                     }
                 })
-                //.setMessage("Seleccione Actividad")
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.e("solo","seleccion "+indexActividad);
-                        if(indexActividad>0){
-                            respuestaDialogListener.onDialogPositiveClickSeleccionActividad(controlador.getListaActividades(indexActividad
-                            ));
+                    FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de seleccion de actividad");
+                    if(indexActividad>0){
+                        respuestaDialogListener.onDialogPositiveClickSeleccionActividad(controlador.getListaActividades(indexActividad));
 
-                            dialogInterface.dismiss();
-                        }else{
-                            Complementos.mensajesError(controlador.getActivity(), Controlador.TiposError.ERROR_VALOR_NO_ENCONTRADO);
-                        }
-
-
+                        dialogInterface.dismiss();
+                    }else{
+                        Complementos.mensajesError(controlador.getActivity(), Controlador.TiposError.ERROR_VALOR_NO_ENCONTRADO);
+                        FileLog.i(Complementos.TAG_DIALOGOS,"Atividad seleccionada no valida index"+indexActividad);
+                    }
                     }
                 })
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_SELECCION_ACTIVIDAD);
                         dialogInterface.dismiss();
                     }
                 });
@@ -319,14 +320,11 @@ public class CapturaDialogDialog {
     }
 
     private AlertDialog dialogoCambioActividades(AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener ){
-        //View viewDialog = layoutInflater.inflate(R.layout.dialog_add_actividades,null);
+
         final CharSequence[] selectedItems = controlador.getListaActividadesArray();  // Where we track the selected items
         CatalogoActividades actividades = controlador.getSetting().getActividades();
-        //tv_descripcionActividad = (EditText) viewDialog.findViewById(R.id.dtv_actividad);
-        Log.e("solo"," "+selectedItems.length);
-        builder//.setView(viewDialog)
-                //.setTitle("ACTIVIDAD ANTERIOR: "+actividades.getDescripcion())
-                .setSingleChoiceItems(selectedItems,controlador.getIndexListaActividad(actividades), new DialogInterface.OnClickListener() {
+
+        builder.setSingleChoiceItems(selectedItems,controlador.getIndexListaActividad(actividades), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         indexActividad = i;
@@ -335,11 +333,12 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de cambio de actividad");
                         if(indexActividad>0){
                             respuestaDialogListener.onDialogPositiveClickCambiarActividad(controlador.getListaActividades(indexActividad));
-
                             dialogInterface.dismiss();
                         }else{
+                            FileLog.i(Complementos.TAG_DIALOGOS,"Atividad seleccionada no valida index"+indexActividad);
                             Complementos.mensajesError(controlador.getActivity(), Controlador.TiposError.ERROR_VALOR_NO_ENCONTRADO);
                         }
                     }
@@ -347,6 +346,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_CAMBIO_ACTIVIDAD);
                         dialogInterface.dismiss();
                     }
                 });
@@ -357,7 +357,6 @@ public class CapturaDialogDialog {
     @SuppressLint("SetTextI18n")
     private AlertDialog dialogoCapturaCambioPuesto(LayoutInflater layoutInflater, AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener, final Trabajadores trabajadores) {
         @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_cambio_puesto,null);
-
 
         TextView tvTrabajador = viewDialog.findViewById(R.id.tv_nombre);
         TextView tvConsecutivo = viewDialog.findViewById(R.id.tv_numero);
@@ -379,6 +378,7 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de cambio de puesto");
                         String hora;
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                             hora = horaCambio.getHour()+":"+horaCambio.getMinute()+":"+ Calendar.getInstance().get(Calendar.SECOND)+":0000";
@@ -386,12 +386,12 @@ public class CapturaDialogDialog {
                             hora = horaCambio.getCurrentHour()+":"+horaCambio.getCurrentMinute()+":"+ Calendar.getInstance().get(Calendar.SECOND)+":"+Calendar.getInstance().get(Calendar.MILLISECOND);
                         }
                         respuestaDialogListener.onDialogPositiveClickCambiarPuesto(trabajadores.getConsecutivo(),(CatalogoPuestos)sp_puesto.getSelectedItem(),hora);
-                        //dialogInterface.dismiss();
                     }
                 })
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_CAMBIO_PUESTO);
                         dialogInterface.dismiss();
                     }
                 });
@@ -402,15 +402,14 @@ public class CapturaDialogDialog {
 
     private AlertDialog dialogoCapturaNumeroTrabajador(final LayoutInflater layoutInflater,final AlertDialog.Builder builder, final InterfaceDialogs respuestaDialogListener) {
         @SuppressLint("InflateParams") View viewDialog = layoutInflater.inflate(R.layout.dialog_numero_captura,null);
-
         capturaNumeroTrabajador =  viewDialog.findViewById(R.id.et_dialog_numero_trabajador);
-
 
         builder.setView(viewDialog)
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String numeroTrabajador = capturaNumeroTrabajador.getText().toString();
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de consulta trabajador num trabajador "+numeroTrabajador);
                         Trabajadores t = controlador.getTrabajador(numeroTrabajador);
 
                         if(t!=null){
@@ -435,6 +434,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_CAPTURA_NUMERO_TRABAJADOR);
                         dialogInterface.dismiss();
                     }
                 });
@@ -463,6 +463,7 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de insersion o eliminacion de produccion ");
                         Producto p = new Producto(Complementos.getDateTimeActual(),trabajador,controlador.getActividad()
                                 ,Integer.parseInt(etPrimera.getText().toString().equals("")?"0":etPrimera.getText().toString())
                                 ,Integer.parseInt(etSegunda.getText().toString().equals("")?"0":etSegunda.getText().toString())
@@ -476,6 +477,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_CAPTURA_PRODUCCION);
                         dialogInterface.dismiss();
                     }
                 });
@@ -490,6 +492,7 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de finalizacion de sesion");
                         respuestaDialogListener.onDialogPositiveClickFinalizarJornada();
                         dialogInterface.dismiss();
                     }
@@ -497,6 +500,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_FINALIZAR_JORNADA);
                         dialogInterface.dismiss();
                     }
                 });
@@ -529,23 +533,24 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Configuracion configuracion;
-                        if(configuracionAnterior!=null)
-                            configuracion = new Configuracion(configuracionAnterior.getId(),configuracionAnterior.getUrlApi(),etPara.getText().toString(),etcc.getText().toString(),etAsunto.getText().toString(),etMensaje.getText().toString(),Integer.parseInt(etTiempoCaptura.getText().toString()),configuracionAnterior.getTiempoMenos());
-                       else{
-                            configuracion = new Configuracion(null,"",etPara.getText().toString(),etcc.getText().toString(),etAsunto.getText().toString(),etMensaje.getText().toString(),Integer.parseInt(etTiempoCaptura.getText().toString()),0);
-                        }
-                        respuestaDialogListener.onDialogPositiveClickConfiguracion(configuracion,configuracionAnterior);
-                        dialogInterface.dismiss();
+                    FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion de insertar o modificar la configuracion");
+                    Configuracion configuracion;
+                    if(configuracionAnterior!=null)
+                        configuracion = new Configuracion(configuracionAnterior.getId(),configuracionAnterior.getUrlApi(),etPara.getText().toString(),etcc.getText().toString(),etAsunto.getText().toString(),etMensaje.getText().toString(),Integer.parseInt(etTiempoCaptura.getText().toString()),configuracionAnterior.getTiempoMenos());
+                    else{
+                        configuracion = new Configuracion(null,"",etPara.getText().toString(),etcc.getText().toString(),etAsunto.getText().toString(),etMensaje.getText().toString(),Integer.parseInt(etTiempoCaptura.getText().toString()),0);
+                    }
+                    respuestaDialogListener.onDialogPositiveClickConfiguracion(configuracion,configuracionAnterior);
+                    dialogInterface.dismiss();
                     }
                 })
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_CONFIGURACION);
                         dialogInterface.dismiss();
                     }
                 });
-
 
         return builder.create();
     }
@@ -577,6 +582,7 @@ public class CapturaDialogDialog {
                 .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"iniciar peticion envio de correo fecha inicio "+tvFechaInicio.getText().toString()+ " fecha final "+tvFechaFinal.getText().toString());
                         Controlador.TiposError tiposError = controlador.enviarCorreo(tvFechaInicio.getText().toString(), tvFechaFinal.getText().toString());
                         Complementos.mensajesError(controlador.getActivity(),tiposError);
                         dialogInterface.dismiss();
@@ -585,6 +591,7 @@ public class CapturaDialogDialog {
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog "+tiposDialogos.DIALOG_ENVIAR_CORREO);
                         dialogInterface.dismiss();
                     }
                 });

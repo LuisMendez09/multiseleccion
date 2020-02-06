@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.luis.corte.Controlers.Controlador;
 import com.luis.corte.R;
+import com.luis.corte.complementos.Complementos;
+import com.luis.corte.complementos.FileLog;
 import com.luis.corte.models.ReporteCajasTotales;
 import com.luis.corte.views.adaptadores.ListaReporteAdapter;
 import com.luis.corte.views.dialogForm.DialogDetalleProduccion;
@@ -67,6 +69,7 @@ public class reporte extends Fragment {
         this.lvReporte.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FileLog.i(Complementos.TAG_REPORTE,"mostrar detalle de produccion");
                 DialogDetalleProduccion detalleProduccion = new DialogDetalleProduccion(controlador.getActivity());
                 detalleProduccion.setControlador(reporte.this.controlador,adapter.getItem(position));
                 detalleProduccion.show();
@@ -76,14 +79,12 @@ public class reporte extends Fragment {
         this.llTotalProduccion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("totales","precion en el total");
+                FileLog.i(Complementos.TAG_REPORTE,"mostrar detalle de produccion general");
                 DialogDetalleProduccion detalleProduccion = new DialogDetalleProduccion(controlador.getActivity());
                 detalleProduccion.setControlador(reporte.this.controlador,null);
                 detalleProduccion.show();
             }
         });
-
-
         // Inflate the layout for this fragment
         return view;
     }

@@ -3,27 +3,22 @@ package com.luis.corte.views.adaptadores;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.luis.corte.R;
+import com.luis.corte.complementos.Complementos;
+import com.luis.corte.complementos.FileLog;
 import com.luis.corte.models.Puestos;
-import com.luis.corte.views.adaptadores.holders.LongClickListener;
-import com.luis.corte.views.adaptadores.holders.PuestosViewHolder;
-import com.luis.corte.views.adaptadores.holders.TrabajadoresViewHolder;
 
 import java.util.ArrayList;
 
 public class ListaPuestosAdaptar extends ArrayAdapter<Puestos> {
     private  Context context;
     private ArrayList<Puestos> puestos;
-    Integer posicion1;
-    private Puestos puestoSeleccionado;
     private TextView tv_puesto;
     private TextView tv_horaInicio;
     private TextView tv_horaFin;
@@ -63,6 +58,7 @@ public class ListaPuestosAdaptar extends ArrayAdapter<Puestos> {
 
 
     public void updatePuesto(Puestos p){
+        FileLog.i(Complementos.TAG_INICIO,"actualziar puesto adapter "+p.toString());
         for (int i=0;i<this.puestos.size();i++) {
             if(p.getId()==this.puestos.get(i).getId()){
                 this.puestos.set(i,p);

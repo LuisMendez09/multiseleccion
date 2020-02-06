@@ -3,7 +3,6 @@ package com.luis.corte.views;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 
 import com.luis.corte.Controlers.Controlador;
@@ -44,7 +43,6 @@ public class Cortina extends AppCompatActivity {
                     mainIntent = new Intent().setClass(Cortina.this, MainActivity.class);
                 }
 
-                FileLog.i(Complementos.TAG_INICIO,"session validada "+ validacionSesion.name());
                 if(validacionSesion!=Controlador.TiposError.SESION_NO_VALIDA){
                     startActivityForResult(mainIntent,100);
                     // cierra la actividad

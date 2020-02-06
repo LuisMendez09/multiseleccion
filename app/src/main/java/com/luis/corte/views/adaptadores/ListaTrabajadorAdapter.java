@@ -3,7 +3,6 @@ package com.luis.corte.views.adaptadores;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,13 +13,12 @@ import android.widget.TextView;
 import com.luis.corte.Controlers.Controlador;
 import com.luis.corte.R;
 import com.luis.corte.complementos.Complementos;
+import com.luis.corte.complementos.FileLog;
 import com.luis.corte.models.Configuracion;
 import com.luis.corte.models.Producto;
 import com.luis.corte.views.dialogForm.CapturaDialogDialog;
 import com.luis.corte.views.dialogForm.DialogListaPuestos;
 import com.luis.corte.views.dialogForm.InterfaceDialogs;
-import com.luis.corte.views.adaptadores.holders.LongClickListener;
-import com.luis.corte.views.adaptadores.holders.TrabajadoresViewHolder;
 import com.luis.corte.models.CatalogoActividades;
 import com.luis.corte.models.CatalogoCajas;
 import com.luis.corte.models.CatalogoPuestos;
@@ -99,11 +97,6 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
         notifyDataSetChanged();
     }
 
-    public boolean isPositionChecked(int position) {
-        Boolean result = mSelection.get(position);
-        return result == null ? false : result;
-    }
-
     public Set<Integer> getCurrentCheckedPosition() {
         return mSelection.keySet();
     }
@@ -138,7 +131,7 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
         return super.getItemId(position);
     }
 
-
+/*
     public void getSelectedItem(MenuItem item){
 
             switch (item.getTitle().toString()){
@@ -157,7 +150,7 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
                     break;
             }
 
-    }
+    }*/
 
 
     public void actualizarAdapter(){
@@ -167,6 +160,7 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
 
     public Controlador.TiposError capturarModificacionTrabajador(Trabajadores trabajadores,Trabajadores trabajdorAnterior){
         //actualizar trabajador
+        FileLog.i(Complementos.TAG_DIALOGOS,"inicia actualizacion de trabajador "+trabajadores.toString());
         Controlador.TiposError tiposError = controlador.updateTrabajadores(trabajadores, trabajdorAnterior);
         if(tiposError==Controlador.TiposError.EXITOSO){
             tiposError = controlador.updateNombreTrabajadorPuesto(trabajadores);
@@ -183,7 +177,7 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
     /////////////////////interface/////////////////////
     @Override
     public void onDialogPositiveClickCapturaPuestos(String descripcion) {
-
+    //no implementar
     }
 
     @Override
@@ -193,12 +187,13 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
 
     @Override
     public void onDialogPositiveClickCapturaActividad(String descripcion, CatalogoCajas TamanioCaja) {
-
+//no implementar
     }
 
     @Override
-    public void onDialogPositiveClickSeleccionActividad(CatalogoActividades catalogoActividades) {
-
+    public void onDialogPositiveClickSeleccionActividad(CatalogoActividades catalogoActividades)
+    {
+//no implementar
     }
 
     @Override
@@ -222,7 +217,7 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
 
     @Override
     public void onDialogPositiveClickCapturarProduccion(Producto producto, Boolean addProduccion) {
-
+//no implementar
     }
 
     @Override
@@ -232,10 +227,11 @@ public class ListaTrabajadorAdapter extends ArrayAdapter<Trabajadores> implement
 
     @Override
     public void onDialogPositiveClickFinalizarJornada() {
+        //no implementar
     }
 
     @Override
     public void onDialogPositiveClickConfiguracion(Configuracion configuracion, Configuracion configuracionAnterior) {
-
+//no implementar
     }
 }

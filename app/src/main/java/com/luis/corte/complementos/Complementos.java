@@ -24,6 +24,12 @@ public class Complementos {
     public static final String TAG_BDHANDLER = "DBHandler";
     public static final String TAG_DIALOG_MODIFICAION_PUESTO = "DialogModificacionPuestos";
     public static final String TAG_CONTROLADOR = "Controlador";
+    public static final String TAG_PRODUCCION = "Produccion";
+    public static final String TAG_REPORTE = "reporte";
+    public static final String TAG_CAPTURA_PRODUCCION = "capturaProduccion";
+    public static final String TAG_CUADRILLA = "cuadrilla";
+    public static final String TAG_DIALOGOS = "cuadroDialogos";
+
 
     @SuppressLint("ObsoleteSdkInt")
     public  static File rutaAlmacenamiento(Context context){

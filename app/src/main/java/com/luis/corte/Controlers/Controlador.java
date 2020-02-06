@@ -85,6 +85,7 @@ public class Controlador {
     }
 
     public Controlador(Activity activity) {
+        FileLog.i(Complementos.TAG_CONTROLADOR,"Inicia peticion del controlador");
         this.activity = activity;
         dbHandlerl = new DBHandler(this.activity);
         configuracion = dbHandlerl.getConfiguracion((long) 1);
@@ -112,6 +113,7 @@ public class Controlador {
     }
     /////////////////////////////////METODOS CONFIGURACION//////////////////////////////
     public Configuracion getConfiguracion(){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de configuracion");
         if(configuracion==null)
             configuracion = dbHandlerl.getConfiguracion((long)1);
 
@@ -119,6 +121,7 @@ public class Controlador {
     }
 
     public TiposError addConfiguracion(Configuracion c,Configuracion cAnterior){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de insersion de configuracion");
         TiposError tiposError = validarCampo(c,cAnterior);
 
         if(tiposError==TiposError.EXITOSO){
@@ -136,15 +139,16 @@ public class Controlador {
             }else{
                 tiposError = TiposError.ERROR_DB;
             }
-
-
         }
+
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respueta de guardado de configuracion: "+tiposError.name());
 
         return tiposError;
     }
 
 
     private TiposError validarCampo(Configuracion configuracion,Configuracion configuracionAnterior){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia validacion de los campos de configuracion");
         TiposError tiposError = TiposError.EXITOSO;
 
         if(configuracionAnterior!=null){
@@ -160,6 +164,7 @@ public class Controlador {
 
     /////////////////////////////////METODOS DE SETTING//////////////////////////////
     public Settings getSetting(){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de setting");
         settings = dbHandlerl.getSetting((long)1);
         if(settings==null){
             settings = new Settings(0,0,1,0,0,-1,listaActividades.get(0));
@@ -168,21 +173,8 @@ public class Controlador {
         return settings;
     }
 
-    public TiposError setSetting(Settings settings){
-        TiposError r= TiposError.ERROR_DB;
-        if(settings!=null) {
-            Long i = dbHandlerl.addSettings(settings);
-            if(!i.equals((long)-1)){
-                Controlador.settings = settings;
-                r = TiposError.EXITOSO;
-            }
-        }else{
-            r = TiposError.ERROR_SETTING_NULL;
-        }
-        return r;
-    }
-
     private TiposError updateSetting(Settings settings){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia actualizacion de settings");
         TiposError r= TiposError.ERROR_DB;
         if(settings!=null) {
            int i = dbHandlerl.updateSetting(settings);
@@ -194,11 +186,13 @@ public class Controlador {
         }else{
             r = TiposError.ERROR_SETTING_NULL;
         }
+
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta de actualizacion de settings: "+r.name());
         return r;
     }
 
     public TiposError ReiniciarSession(){
-        //dbHandlerl.recrearTablaTrabajadores();
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de reiniciar de sesion");
         listaTrabajadores.clear();
         listaTrabajadores = null;
         listaTrabajadores = dbHandlerl.getTrabajdores();
@@ -214,6 +208,7 @@ public class Controlador {
     }
 
     public TiposError iniciarSession(CatalogoActividades catalogoActividades){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de iniciar sesion");
         settings.setCapturaTrabaajdor(listaTrabajadores.size());
         settings.setActividades(catalogoActividades);
 
@@ -221,11 +216,13 @@ public class Controlador {
     }
 
     public TiposError finalizarSesion(){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia finalizacion de jornada");
         TiposError tiposError = TiposError.EXITOSO;
 
         //validar hora final
         Long dateFin = Complementos.getDateTimeActual();
         if(!settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))) {
+            FileLog.i(Complementos.TAG_CONTROLADOR,"la fecha de inicio de sesion y la fecha actual no son iguales. se finalizara la jornada a las 20:00:00");
             try {
                 dateFin = Complementos.convertirStringAlong(settings.getFechaString(),"20:00:00:0000");
             } catch (ParseException e) {
@@ -248,6 +245,7 @@ public class Controlador {
                 for (Trabajadores t :listaTrabajadores) {
                     Puestos puesto = dbHandlerl.getUltimoPuesto(settings.getFechaString(),t);
                     if(puesto==null){
+                        FileLog.i(Complementos.TAG_CONTROLADOR,"sin puestos");
                         puesto= new Puestos(settings.getFechaInicio(),settings.getFechaFinal(),t,0,t.getPuestosActual());
                         Long aLong = dbHandlerl.addPuesto(puesto);
                         tiposError = aLong==-1?TiposError.ERROR_DB:TiposError.EXITOSO;
@@ -261,12 +259,13 @@ public class Controlador {
             }
         }
 
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta de actualizacion: "+tiposError.name());
         return tiposError;
     }
 
     public TiposError validarInicioSesion(){//al finalizar poner en 0 iniciojornada en 1 finalizarjornada y 0 totaltrabajadores
         TiposError r = TiposError.SESION_NO_VALIDA;
-        Log.i("inicio",settings.toString());
+
         if(settings.getInicioJornada()==0 && settings.getCapturaTrabaajdor()==-1 && settings.getFinJornada()==1 && !settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))){//continuar  nueva sesion
             r = TiposError.SESION_REINICIAR;//sesion finalizada en diferente dia ---> reiniciar sesion y continuar a capturar trabajadores
         }else if(settings.getInicioJornada()==1 && settings.getCapturaTrabaajdor()>0 && settings.getFinJornada()==0 && settings.getFechaString().equals(Complementos.obtenerFechaString(Complementos.getDateActual()))){
@@ -281,6 +280,7 @@ public class Controlador {
             r = TiposError.SESION_REINICIAR; // sesion reiniciada sin captura de trabajadores --> ir a captura trabajadores
         }
 
+        FileLog.i(Complementos.TAG_CONTROLADOR,"status session: "+r.name());
         return r;
     }
 
@@ -301,6 +301,7 @@ public class Controlador {
 
     /////////////////////////////////METODOS DE LISTA DE PUESTOS//////////////////////////////
     public ArrayList<CatalogoPuestos> getListaPuestos(){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"Inicia peticion de lista de puestos");
         if(listaActividades.size()==0){
             listaPuestos = dbHandlerl.getCatalogoPuestos();
             if(listaPuestos.size()==0){
@@ -334,13 +335,11 @@ public class Controlador {
     public TiposError setCategoriaPuestos(CatalogoPuestos catalogoPuestos){
         TiposError r= TiposError.ERROR_DB;
         if(settings==null) {
-            Log.e("MSN",catalogoPuestos.validarCamposVacios()+"  ----");
             r = TiposError.ERROR_SETTING_NULL;
         }else{
             if(catalogoPuestos.validarCamposVacios()){
                 Long i = dbHandlerl.addCatalogoPuestos(catalogoPuestos);
                 if(!i.equals((long)(-1))){
-                    //catalogoPuestos.setId(i);
                     listaPuestos.add(catalogoPuestos);
                     r = TiposError.EXITOSO;
                 }
@@ -348,6 +347,7 @@ public class Controlador {
                 r = TiposError.ERROR_CAMPOS_VACIOS;
             }
         }
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta de guardado nuevo puesto: "+r.name());
         return r;
     }
 /////////////////////////////////METODOS DE PUESTOS DE TRABAJADORES//////////////////////////////
@@ -357,6 +357,7 @@ public class Controlador {
 
         for (Trabajadores t: listaTrabajadores) {
             if(t.getConsecutivo().equals(consecutivo)){
+                FileLog.i(Complementos.TAG_CONTROLADOR,"inicia cambio de puesto al trabajador "+t.toString());
                 if(catalogoPuesto.getId()>1){
                     if(!t.getPuestosActual().getId().equals(catalogoPuesto.getId())){
                         try {
@@ -419,10 +420,12 @@ public class Controlador {
             }
         }
 
+        FileLog.i(Complementos.TAG_CONTROLADOR,"resultado de cambio de puesto "+r.name());
         return r;
     }
 
     public TiposError actualizarUltimoPuesto(Trabajadores trabajador){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia actualizacion del ultimo puesto "+trabajador.toString());
         TiposError e = TiposError.EXITOSO;
 
         Puestos puestosTrabajador = dbHandlerl.getUltimoPuesto(settings.getFechaString(), trabajador);
@@ -437,10 +440,12 @@ public class Controlador {
             e = TiposError.SIN_CAMBIO_DE_PUESTO;
         }
 
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta actualizacion del ultimo puesto "+e.name());
         return e;
     }
 
     public ArrayList<Puestos> getPuestosTrabajador(Trabajadores trabajador){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de puestos del trabajador "+trabajador.toString());
         ArrayList<Puestos> puestosTrabajador = dbHandlerl.getPuestosTrabajador(settings.getFechaString(), trabajador);
 
         if(puestosTrabajador.size()==0){
@@ -451,23 +456,19 @@ public class Controlador {
     }
 
     public TiposError updatePuesto(Puestos cambioPuesto, Puestos puestoAnterio){
+        FileLog.i(Complementos.TAG_DIALOGOS,"inicia peticion de actualizacion de puesto "+cambioPuesto.toString());
+
         TiposError respuesta = TiposError.EXITOSO;
         Long oi;
         Long of;
         Long hi;
         Long hf;
 
-        Log.i("verificacionHora","cambios "+cambioPuesto.toString());
-        Log.i("verificacionHora","cambios anterior "+puestoAnterio.toString());
-
         if(!cambioPuesto.getPuestos().getDescripcion().equals(puestoAnterio.getPuestos().getDescripcion())
                 || !cambioPuesto.getHoraInicioString().equals(puestoAnterio.getHoraInicioString())
                 || !cambioPuesto.getHoraFinalString().equals(puestoAnterio.getHoraFinalString())){
 
             if(!cambioPuesto.getHoraInicioString().equals(puestoAnterio.getHoraInicioString()) || !cambioPuesto.getHoraFinalString().equals(puestoAnterio.getHoraFinalString())){
-
-                Log.i("verificacionHora","hora inicio "+cambioPuesto.getHoraInicioString());
-                Log.i("verificacionHora","hora inicio "+puestoAnterio.getHoraInicioString());
 
                 Long horaActual = Complementos.getDateTimeActual();
 
@@ -481,7 +482,6 @@ public class Controlador {
                         for (Puestos o : getPuestosTrabajador(cambioPuesto.getTrabajadorObjec())) {
                             oi = o.getDateInicio();
                             of = o.getDateFin()==0?horaActual:o.getDateFin();
-
 
                             if(!o.getId().equals(cambioPuesto.getId())){//no se debe de comparar el mismo puesto
                                 Log.i("verificacionHora",o.toString());
@@ -524,7 +524,6 @@ public class Controlador {
         }
 
         if(respuesta == TiposError.EXITOSO){
-            Log.i("verificacionHora","cambios en el puesto "+cambioPuesto.toString());
 
             if(cambioPuesto.getId()==null){
                 Log.i("verificacionHora","actualziar solo el puesto actual del trabajador");
@@ -555,28 +554,31 @@ public class Controlador {
             }
         }
 
+        FileLog.i(Complementos.TAG_DIALOGOS,"respuesta de actualizacion de puesto "+respuesta.name());
         return respuesta;
     }
 
     public TiposError updateNombreTrabajadorPuesto(Trabajadores trabajadores){
-
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia actualizacion de nombre en los puestos");
         int i = dbHandlerl.updateNombreTrabajadorPuestos(trabajadores);
 
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta actualizacion de nombre en los puestos "+(i==-1?TiposError.ERROR_DB:TiposError.EXITOSO));
         return i==-1?TiposError.ERROR_DB:TiposError.EXITOSO;
     }
 
     public TiposError updateNombreTrabajadorProduccion(Trabajadores trabajador){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia actualizacion de nombre en la produccion");
         TiposError respuesta;
         int i = dbHandlerl.updateNombreTrabajadorProduccion(trabajador);
 
         respuesta = i==-1?TiposError.ERROR_DB:TiposError.EXITOSO;
-
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta actualizacion de nombre en los puestos "+respuesta.name());
         return respuesta;
     }
 
 /////////////////////////////////METODOS DE LISTA DE TAMAÑOS DE CAJAS//////////////////////
     public ArrayList<CatalogoCajas> getListaTamaiosCajas(){
-
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de catalogo de cajas");
         if(listaTamaiosCajas.size()==0){
              listaTamaiosCajas = dbHandlerl.getCatalogoTamaniosCajas();
             if(listaTamaiosCajas.size()==0){
@@ -638,7 +640,6 @@ public class Controlador {
             if(catalogoCajas.validarCamposVacios()){
                 Long i = dbHandlerl.addCatalogoCajas(catalogoCajas);
                 if(!i.equals((long)-1)){
-                    //catalogoPuestos.setId(i);
                     this.getListaTamaiosCajas().add(catalogoCajas);
                     r = TiposError.EXITOSO;
                 }
@@ -649,11 +650,12 @@ public class Controlador {
         }else{
             r = TiposError.ERROR_SETTING_NULL;
         }
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta de insersion nueva caja: "+r.name());
         return r;
     }
     ////////////////////////////////METODOS DE ACTIVIDADES/////////////////////////////////////
     private ArrayList<CatalogoActividades> getListaActividades(){
-
+        FileLog.i(Complementos.TAG_CONTROLADOR,"Inicia peticion de catalogo de actividades");
          if(listaActividades.size()==0){
              listaActividades = dbHandlerl.getCatalogoActividades();
 
@@ -664,6 +666,7 @@ public class Controlador {
                  listaActividades.add(catalogoActividades);
              }
          }
+
          return listaActividades;
     }
 
@@ -681,6 +684,7 @@ public class Controlador {
     }
 
     public CatalogoActividades getListaActividades(int posicion){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de actividad");
         CatalogoActividades catalogoActividades = null;
         if(settings!=null) {
             if(listaActividades.size()==0)
@@ -693,6 +697,7 @@ public class Controlador {
     }
 
     public CharSequence[] getListaActividadesArray(){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"iniciar peticion peticion de catalogo de actividades en array");
         CharSequence[] actividades = new CharSequence[listaActividades.size()];
 
         for (int i=0;i<listaActividades.size();i++) {
@@ -703,6 +708,7 @@ public class Controlador {
     }
 
     public int getIndexListaActividad(CatalogoActividades actividades){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"iniciar peticion peticion de index de la actividad "+actividades.toString1());
         int index;
 
         for (index=0;index<listaActividades.size();index++) {
@@ -729,13 +735,18 @@ public class Controlador {
         }else{
             r = TiposError.ERROR_SETTING_NULL;
         }
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta de insersion nueva actividad: "+r.name());
         return r;
     }
 
     public TiposError cambiarActividad(CatalogoActividades catalogoActividades){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"actividad actual:"+settings.getActividades().toString());
+        FileLog.i(Complementos.TAG_CONTROLADOR,"actividad nueva:"+catalogoActividades.toString());
         settings.setActividades(catalogoActividades);
+        TiposError r = updateSetting(settings);
 
-        return updateSetting(settings);
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta cambio actividad:"+r.name());
+        return r;
     }
 
     public String getActividadActual(){
@@ -759,6 +770,7 @@ public class Controlador {
     }
 /////////////////////////////////METODOS DEL TRABAJADOR//////////////////////////////
     public ArrayList<Trabajadores> getListaTrabajadores(){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de lista de trabajadores");
         Trabajadores r=null;
         if(settings!=null) {
             if(listaTrabajadores.size()==0)
@@ -770,7 +782,7 @@ public class Controlador {
     }
 
     public TiposError setTrabajador(Trabajadores trabajadores){
-
+        FileLog.i(Complementos.TAG_CONTROLADOR,"iniciar peticion insersion nuevo trabajador"+trabajadores.toString());
         TiposError r= TiposError.ERROR_DB;
         if(settings!=null) {
             if(trabajadores.validarCamposVacios()){
@@ -785,6 +797,8 @@ public class Controlador {
         }else{
             r = TiposError.ERROR_SETTING_NULL;
         }
+
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta peticion insersion nuevo trabajador "+r.name());
         return r;
     }
 
@@ -797,16 +811,15 @@ public class Controlador {
     }
 
     public Trabajadores getTrabajador(String consecutivo){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"buscar trabajador consecutivo "+consecutivo);
         Trabajadores r=null;
-        Log.i("captura","---------------"+consecutivo+"--------");
-        Log.i("captura",settings.toString());
         if(settings!=null) {
             if(!consecutivo.equals("")){
                 Integer c = Integer.parseInt(consecutivo);
-                Log.i("captura",c.toString());
                 for (Trabajadores t :
                         listaTrabajadores) {
                     if (t.getConsecutivo().equals(c)){
+
                         r = t;
                         break;
                     }
@@ -836,23 +849,20 @@ public class Controlador {
     }
 
     public TiposError updateTrabajadores(Trabajadores trabajadores,Trabajadores trabajadorAnterior){
-        Log.i("verificacionHora",trabajadores.getIdTrabajdor()+"--"+trabajadores.getPuestosActual().getDescripcion()+"---"+trabajadorAnterior.getPuestosActual().getDescripcion());
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion de actualizacion "+trabajadores.toString());
         TiposError r= TiposError.ERROR_DB;
         if(trabajadores.validarCamposVacios()){
             if(trabajadorAnterior.validarCambios(trabajadores)){
                 if(Controlador.settings!=null) {
                     int i = dbHandlerl.updateTrabajdores(trabajadores);
                     if(i!=-1){
-
-                    for (int index=0 ; index<listaTrabajadores.size();index++) {
-                        if(trabajadores.getIdTrabajdor().equals(listaTrabajadores.get(index).getIdTrabajdor())){
-                            listaTrabajadores.set(index,trabajadores);
-                            r = TiposError.EXITOSO;
-                            break;
+                        for (int index=0 ; index<listaTrabajadores.size();index++) {
+                            if(trabajadores.getIdTrabajdor().equals(listaTrabajadores.get(index).getIdTrabajdor())){
+                                listaTrabajadores.set(index,trabajadores);
+                                r = TiposError.EXITOSO;
+                                break;
+                            }
                         }
-                    }
-
-                        //r = actualizarUltimoPuesto(trabajadores);
                     }
                 }else{
                     r = TiposError.ERROR_SETTING_NULL;
@@ -863,7 +873,7 @@ public class Controlador {
         }else{
             r = TiposError.ERROR_CAMPOS_VACIOS;
         }
-
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta de actualizacion "+r.name());
         return r;
     }
 
@@ -882,7 +892,6 @@ public class Controlador {
         TiposError resultado;
         if(produccion!=null){
             resultado = validarCapturaProduccion(produccion);
-            Log.i("EMAIL",resultado.name());
             if(resultado==TiposError.EXITOSO){
                 Long r = dbHandlerl.addProduccion(produccion);
                 if(r==-1)
@@ -891,54 +900,56 @@ public class Controlador {
         }else{
             resultado = TiposError.ERROR_CAMPOS_VACIOS;
         }
+
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta captura produccion:"+resultado.name());
         return resultado;
     }
 
     public TiposError deleteProduccion(Producto producto) {
         TiposError tiposError = TiposError.EXITOSO;
         boolean update = false;
-
+        FileLog.i(Complementos.TAG_MAIN,"cantidades a quitar: "+producto.toString());
         ArrayList<Producto> produccion = getRegistrosTrabajador(producto,settings.getFechaString());
 
-
-            if(produccion.size()>0){
-                for (Producto p : produccion) {
-                    if(producto.getAgranel()>0 || producto.getSegunda()>0 || producto.getPrimera()>0){
-                        if(p.getPrimera()>0 && producto.getPrimera()>0){
-                            Integer[] r = quitarProduccion(p.getPrimera(),producto.getPrimera());
-                            p.setPrimera(r[0]);
-                            producto.setPrimera(r[1]);
-                            update = true;
-                        }
-                        if(p.getSegunda()>0 && producto.getSegunda()>0){
-                            Integer[] r = quitarProduccion(p.getSegunda(),producto.getSegunda());
-                            p.setSegunda(r[0]);
-                            producto.setSegunda(r[1]);
-                            update = true;
-                        }
-                        if(p.getAgranel()>0 && producto.getAgranel()>0){
-                            Integer[] r = quitarProduccion(p.getAgranel(),producto.getAgranel());
-                            p.setAgranel(r[0]);
-                            producto.setAgranel(r[1]);
-                            update = true;
-                        }
-
-                        if(update){
-                            int i = dbHandlerl.updateProduccion(p);
-                            if(i==-1){
-                                tiposError = TiposError.ERROR_DB;
-                                break;
-                            }else{
-                                update =false;
-                            }
-
-                        }
-                    }else{
-                        break;
+        if(produccion.size()>0){
+            for (Producto p : produccion) {
+                if(producto.getAgranel()>0 || producto.getSegunda()>0 || producto.getPrimera()>0){
+                    if(p.getPrimera()>0 && producto.getPrimera()>0){
+                        Integer[] r = quitarProduccion(p.getPrimera(),producto.getPrimera());
+                        p.setPrimera(r[0]);
+                        producto.setPrimera(r[1]);
+                        update = true;
                     }
+                    if(p.getSegunda()>0 && producto.getSegunda()>0){
+                        Integer[] r = quitarProduccion(p.getSegunda(),producto.getSegunda());
+                        p.setSegunda(r[0]);
+                        producto.setSegunda(r[1]);
+                        update = true;
+                    }
+                    if(p.getAgranel()>0 && producto.getAgranel()>0){
+                        Integer[] r = quitarProduccion(p.getAgranel(),producto.getAgranel());
+                        p.setAgranel(r[0]);
+                        producto.setAgranel(r[1]);
+                        update = true;
+                    }
+
+                    if(update){
+                        int i = dbHandlerl.updateProduccion(p);
+                        if(i==-1){
+                            tiposError = TiposError.ERROR_DB;
+                            break;
+                        }else{
+                            update =false;
+                        }
+
+                    }
+                }else{
+                    break;
                 }
             }
+        }
 
+        FileLog.i(Complementos.TAG_MAIN,"respuesta de restar produccion "+tiposError.name());
         return tiposError;
     }
 
@@ -961,19 +972,23 @@ public class Controlador {
 
     private ArrayList<Producto> getRegistrosTrabajador(Trabajadores trabajador, String fecha){
         ArrayList<Producto> registros;
+        FileLog.i(Complementos.TAG_MAIN,"inicia peticion de produccion de la fecha"+fecha+" del trabajador:"+trabajador.toString());
         registros = dbHandlerl.getResgistrosProduccion(trabajador,fecha);
 
         return registros;
     }
 
     public ReporteProduccion getTotalProduccion(Trabajadores trabajador, CatalogoActividades actividad){
-        if(trabajador!=null)
-            return dbHandlerl.getTotalProduccionTrabajador(trabajador,actividad,settings.getFechaString());
-        else
+        if(trabajador!=null) {
+
+            FileLog.i(Complementos.TAG_CAPTURA_PRODUCCION, "Inicia peticion del total de produccion de la actividad " + actividad.toString1() + " trabajador " + trabajador.toString());
+            return dbHandlerl.getTotalProduccionTrabajador(trabajador, actividad, settings.getFechaString());
+        }else
             return null;
     }
 
     private TiposError validarCapturaProduccion(Producto producto){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia validacion de campo produccion");
         TiposError resultado = TiposError.EXITOSO;
 
         if(producto.getPrimera()<=0 &&producto.getSegunda()<=0 && producto.getAgranel()<=0)
@@ -983,11 +998,12 @@ public class Controlador {
     }
 
     private Producto getUltimaProduccion(Trabajadores trabajadores){
-
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia peticion del ultimo registro de produccion del trabajador: "+trabajadores.toString());
         return  dbHandlerl.getUltimoResgistroProduccion(trabajadores,settings.getFechaString());
     }
 
     private TiposError validarPuestoProduccion(Trabajadores trabajadores){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia validacion de puesto");
         TiposError resultado = TiposError.EXITOSO;
 
         if(trabajadores!=null){
@@ -998,12 +1014,13 @@ public class Controlador {
             resultado = TiposError.ERROR_TRABAJADOR_NO_VALIDO;
         }
 
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta validacion de puesto "+resultado.name());
         return resultado;
     }
 
     public TiposError validarPrecaptura(Trabajadores trabajadores,Long time){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"Inicia prevalidacion de campo de produccion");
         TiposError resultado;
-Log.i("captura",getConfiguracion().toString());
         if(trabajadores!=null){
             resultado = validarPuestoProduccion(trabajadores);
             if(resultado==TiposError.EXITOSO){
@@ -1025,10 +1042,12 @@ Log.i("captura",getConfiguracion().toString());
             resultado = TiposError.ERROR_TRABAJADOR_NO_VALIDO;
         }
 
+        FileLog.i(Complementos.TAG_CONTROLADOR,"respuesta prevalidacion de campo de produccion "+resultado.name());
         return resultado;
     }
 /////////////////////////////////METODOS DE REPORTE//////////////////////////////
     public TreeMap<String,Object> getReporteDiaTrabajadores(){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"sin peticion de produccion del dia");
         ArrayList<ReporteProduccion> reporteGeneral = dbHandlerl.getReporte(settings.getFechaString(), null);
         TreeMap<String,Object> reporte = new TreeMap<>();
         ArrayList<ReporteCajasTotales> reporteCajas = new  ArrayList<>();
@@ -1043,7 +1062,6 @@ Log.i("captura",getConfiguracion().toString());
 
 
         for (ReporteProduccion r : reporteGeneral) {
-
             if(r.getIdTrabajdor().equals(trabajadorActual)){
                 registro = reporteCajas.get(reporteCajas.size()-1);
             }else{
@@ -1070,7 +1088,6 @@ Log.i("captura",getConfiguracion().toString());
             if (registroTotal != null) {
                 registroTotal.setTotalAgranel(registroTotal.getTotalAgranel()+r.getTotalAgranel());
             }
-
         }
 
         for (Long key :  reporteTotal.keySet()) {
@@ -1093,10 +1110,12 @@ Log.i("captura",getConfiguracion().toString());
 
         reporte.put("trabajadores",reporteCajas);
         reporte.put("totales",totales);
+
         return reporte;
     }
 
     public  ArrayList<ReporteProduccion> getReporteDetalleTrabajador(Trabajadores trabajador){
+        FileLog.i(Complementos.TAG_DIALOGOS,"inicia peticion de produccion detallada del trabajador "+trabajador.toString());
 
         ArrayList<ReporteProduccion> reporte = dbHandlerl.getReporte(settings.getFechaString(), trabajador);
         TreeMap<Long,ReporteProduccion> total = new TreeMap<>();
@@ -1154,7 +1173,7 @@ Log.i("captura",getConfiguracion().toString());
     }
 
     public static String calcularCajas(Integer cajas, Integer vasquetes, Boolean tipoCaja){
-
+        FileLog.i(Complementos.TAG_CONTROLADOR,"inicia calculo de cajas "+cajas+" vasquetes "+vasquetes+" tipoCaja"+tipoCaja);
         String cajasTotales = "";
         String leyendaCaja;
         String letendaVasquetes;
@@ -1183,11 +1202,13 @@ Log.i("captura",getConfiguracion().toString());
                 cajasTotales= cajasTotales+"s";
             }
         }
-        //Log.i("reporte",cajasTotales+"----"+cajas+"---"+vasquetes);
+
+        FileLog.i(Complementos.TAG_CONTROLADOR,"resultado "+cajasTotales);
         return cajasTotales;
     }
 
     public static float getCajas(Integer totalVasquetes, Integer vasqetesXcajas){
+        FileLog.i(Complementos.TAG_CONTROLADOR,"calcular el total de cajas");
         return  ((float)totalVasquetes/(float)vasqetesXcajas);
     }
 

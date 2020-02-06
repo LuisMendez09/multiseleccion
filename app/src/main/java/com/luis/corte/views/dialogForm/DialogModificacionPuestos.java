@@ -54,6 +54,7 @@ public class DialogModificacionPuestos extends AlertDialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        FileLog.i(Complementos.TAG_DIALOGOS,"inicia dialog DialogModificacionPuestos");
         setContentView(R.layout.dialog_editar_puestos);
         setCancelable(false);
         setCanceledOnTouchOutside(false);
@@ -91,7 +92,8 @@ public class DialogModificacionPuestos extends AlertDialog {
         this.btn_cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogModificacionPuestos.this.dismiss();
+            FileLog.i(Complementos.TAG_DIALOGOS,"cancela dialog DialogModificacionPuestos");
+            DialogModificacionPuestos.this.dismiss();
             }
         });
 
@@ -118,25 +120,22 @@ public class DialogModificacionPuestos extends AlertDialog {
 
     private void guardar(){
         try {
+            FileLog.i(Complementos.TAG_DIALOGOS,"inicia peticion de actualizacion de puesto ");
             Puestos cambioPuestos = new Puestos(this.puestos.getId(),this.puestos.getDateInicio(),this.puestos.getDateFin(),this.puestos.getTrabajadorObjec(),this.puestos.getEnviado(),this.puestos.getPuestos());
 
-            Log.i("verificacionHora",cambioPuestos.getFechaString()+" "+tv_horaInicio.getText().toString());
             cambioPuestos.setPuestos((CatalogoPuestos) this.sp_puesto.getSelectedItem());
             cambioPuestos.setDateInicio(Complementos.convertirStringAlong(cambioPuestos.getFechaString(),tv_horaInicio.getText().toString()));
             cambioPuestos.setDateFin(tv_horaFinal.getText().toString().equals("")?0:Complementos.convertirStringAlong(cambioPuestos.getFechaString(),tv_horaFinal.getText().toString()));
 
             Controlador.TiposError respuesta = controlador.updatePuesto(cambioPuestos,this.puestos);
-            Log.i("verificacionHora",respuesta.name());
+
             if(respuesta == Controlador.TiposError.EXITOSO){
 
                 adaptar.updatePuesto(cambioPuestos);
                 adaptarTrabajadores.actualizarAdapter();
                 DialogModificacionPuestos.this.dismiss();
-
-                Log.i("verificacionHora",cambioPuestos.toString());
             }else{
-
-                FileLog.i(Complementos.TAG_DIALOG_MODIFICAION_PUESTO,"ERROR AL GUARDAR CAMBIO");
+                FileLog.i(Complementos.TAG_DIALOGOS,"ERROR AL GUARDAR CAMBIO");
                 Complementos.mensajesError(this.controlador.getActivity(),respuesta);
 
                 if(respuesta == Controlador.TiposError.SIN_CAMBIOS)
