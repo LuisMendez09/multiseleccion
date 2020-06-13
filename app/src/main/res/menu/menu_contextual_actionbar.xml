@@ -7,6 +7,7 @@
         android:showAsAction="ifRoom|withText"
         android:title="Falta"
         android:icon="@android:drawable/presence_busy"
+
         tools:ignore="AppCompatResource" />
     <item
         android:id="@+id/menu_asistencia"

@@ -71,6 +71,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
         lvTrabajadores.setAdapter(adaptadorTrabajadores);
         lvTrabajadores.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         multiseleccion = multiseleccion();
+
         lvTrabajadores.setMultiChoiceModeListener(multiseleccion);
 
         lvTrabajadores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -145,7 +146,9 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
 
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                mode.setTitle("" + lvTrabajadores.getCheckedItemCount() + " items selected");
+                int total = lvTrabajadores.getCheckedItemCount();
+                mode.setTitle("" + total +(total==1?"trabajador seleccionado":" trabajadores seleccionado"));
+
                 if (checked) {
                     nr++;
                     adaptadorTrabajadores.setNewSelection(position, checked);
@@ -158,6 +161,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 MenuInflater menuInflater = mode.getMenuInflater();
+
                 menuInflater.inflate(R.menu.menu_contextual_actionbar, menu);
                 Cuadrilla.this.mode = mode;
                 return true;
@@ -246,7 +250,7 @@ public class Cuadrilla extends Fragment implements InterfaceDialogs {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        adaptadorTrabajadores.getSelectedItem(item);
+        //adaptadorTrabajadores.getSelectedItem(item);
         return super.onContextItemSelected(item);
     }
 

@@ -28,6 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.io.File;
@@ -1117,7 +1118,7 @@ public class Controlador {
     public  ArrayList<ReporteProduccion> getReporteDetalleTrabajador(Trabajadores trabajador){
         FileLog.i(Complementos.TAG_DIALOGOS,"inicia peticion de produccion detallada del trabajador "+trabajador.toString());
 
-        ArrayList<ReporteProduccion> reporte = dbHandlerl.getReporte(settings.getFechaString(), trabajador);
+        ArrayList<ReporteProduccion> reporte = dbHandlerl.getReporteDetalle(settings.getFechaString(), trabajador);
         TreeMap<Long,ReporteProduccion> total = new TreeMap<>();
         ReporteProduccion totales;
         if(trabajador==null){
@@ -1380,15 +1381,24 @@ public class Controlador {
                         HSSFCell cel1 = row.getCell(c);
                         if(c==columnaConsecutivo){
                             trabajador.setConsecutivo((int) ((double)getValuesCell(cel1)));
-                        }
-
-
-                        else if (c==columnaNombre)
+                        }else if (c==columnaNombre){
                             trabajador.setNombre(getValuesCell(cel1).toString());
-                        else if (c==columnaApPaterno)
-                            trabajador.setApellidoPaterno(getValuesCell(cel1).toString());
-                        else if (c==columnaApMaterno)
-                            trabajador.setApellidoMaterno(getValuesCell(cel1).toString());
+                        }else if (c==columnaApPaterno){
+                            if(cel1.getCellTypeEnum() == CellType.NUMERIC){
+                                int v = (int) ((double)getValuesCell(cel1));
+                                trabajador.setApellidoPaterno(v+"");
+                            }else{
+                                trabajador.setApellidoPaterno(getValuesCell(cel1).toString());
+                            }
+                        }else if (c==columnaApMaterno){
+                            if(cel1.getCellTypeEnum() == CellType.NUMERIC){
+                                int v = (int) ((double)getValuesCell(cel1));
+                                trabajador.setApellidoMaterno(v+"");
+                            }else{
+                                trabajador.setApellidoMaterno(getValuesCell(cel1).toString());
+                            }
+
+                        }
                     }
 
                     trabajador.setPuestosActual(cp);

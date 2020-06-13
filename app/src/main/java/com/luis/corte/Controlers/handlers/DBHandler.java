@@ -1040,6 +1040,41 @@ public class DBHandler extends SQLiteOpenHelper {
         return reporte;
     }
 
+    public ArrayList<ReporteProduccion> getReporteDetalle(String fecha,Trabajadores trabajador) {
+        ArrayList<ReporteProduccion> reporte = new ArrayList<>();
+        FileLog.i(Complementos.TAG_BDHANDLER,"inicia consulta de produccion a detalle de la fecha: "+fecha);
+        // Select All Query
+        String selectQuery = "SELECT "+KEY_IDTRABAJADOR_PRODUCCION+","+KEY_IDACTIVIDAD_PRODUCCION+","+KEY_PRIMERA_PRODUCCION+","+KEY_SEGUNDA_PRODUCCION+","+KEY_AGRANEL_PRODUCCION+"," +KEY_DATE_PRODUCCION+
+                " FROM " + TABLE_PRODUCCION + " WHERE " + KEY_ENVIADO_PRODUCCION + " = 0 AND "+KEY_FECHASTRING_PRODUCCION+" = '"+fecha+"' AND ("
+                +KEY_PRIMERA_PRODUCCION+" <> 0 OR "+KEY_SEGUNDA_PRODUCCION+" <> 0 OR "+KEY_AGRANEL_PRODUCCION+" <> 0 )" ;
+
+        if(trabajador!=null){
+            FileLog.i(Complementos.TAG_BDHANDLER,"filtrar produccion por el trabjador "+trabajador.toString());
+            selectQuery=selectQuery +" AND "+KEY_IDTRABAJADOR_PRODUCCION+" = "+trabajador.getIdTrabajdor();
+        }
+        selectQuery=selectQuery +" ORDER BY "+KEY_IDTRABAJADOR_PRODUCCION+","+KEY_IDACTIVIDAD_PRODUCCION+","+KEY_FECHASTRING_PRODUCCION+","+KEY_DATE_PRODUCCION;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                // Adding contact to list
+                Trabajadores t = trabajador!=null?trabajador:getTrabajdores(Long.parseLong(cursor.getString(0)));
+                CatalogoActividades actividades = getcatalogoActividades(Long.parseLong(cursor.getString(1)));
+                ReporteProduccion reporteProduccion = new ReporteProduccion(cursor, t, actividades);
+                reporteProduccion.setHora(cursor.getLong(5));
+                reporte.add(reporteProduccion);
+
+            } while (cursor.moveToNext());
+        }
+        // return contact list
+        cursor.close();
+        db.close();
+        FileLog.i(Complementos.TAG_BDHANDLER,"total registros de produccion "+reporte.size());
+        return reporte;
+    }
+
     //////////////////// UPDATE //////////////////////////
 
     /**

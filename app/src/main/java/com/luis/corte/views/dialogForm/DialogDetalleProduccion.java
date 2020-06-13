@@ -38,6 +38,7 @@ public class DialogDetalleProduccion extends AlertDialog {
         setCanceledOnTouchOutside(false);
 
 
+
         tvTrabajador =  findViewById(R.id.tv_trabajador_detalleReporte);
         tvConsecutivo =  findViewById(R.id.tv_consecutivo_detalleReporte);
         lvDetalleProduccion =  findViewById(R.id.lv_detalle_detalleReporte);

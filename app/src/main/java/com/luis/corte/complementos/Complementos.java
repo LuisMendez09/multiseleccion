@@ -172,4 +172,15 @@ public class Complementos {
 
         return sdf.format(fecha);
     }
+
+    /***
+     * obtener la fecha en formato dd/MM/yyyy
+     * @param fecha tipo date
+     * @return string con el ofrmato de fecha
+     */
+    public static String obtenerHoraString(Date fecha){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+        return sdf.format(fecha);
+    }
 }

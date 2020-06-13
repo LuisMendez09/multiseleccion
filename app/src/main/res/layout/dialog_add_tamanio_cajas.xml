@@ -20,7 +20,7 @@
             android:textSize="@dimen/title_font_zise"
             android:textColor="@color/colorFont"
             android:inputType="textPersonName"
-            android:text="Creacion de tañaos de cajas" />
+            android:text="Creacion de tamaños de cajas" />
     </LinearLayout>
 
     <LinearLayout

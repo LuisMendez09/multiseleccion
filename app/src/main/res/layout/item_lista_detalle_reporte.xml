@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="550sp"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/borde">
+    android:background="@drawable/borde"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:background="@color/colorAccentDark"
         android:paddingLeft="@dimen/padding_left_right_componentes"
         android:paddingRight="@dimen/padding_left_right_componentes">
         <TextView
             android:id="@+id/tv_actividad_itemDetalleReporte"
-            android:layout_width="match_parent"
+            android:layout_width="0sp"
             android:layout_height="match_parent"
+            android:layout_weight="0.5"
             android:text="actividad"
+            android:textColor="@color/colorFont"
+            android:textStyle="bold"
+            android:textSize="@dimen/font_label_titulo"/>
+
+        <TextView
+            android:id="@+id/tv_horaCaptura_itemDetalleReporte"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="Hora: "
+            android:gravity="end"
             android:textColor="@color/colorFont"
             android:textStyle="bold"
             android:textSize="@dimen/font_label_titulo"/>
@@ -24,13 +37,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:layout_weight="1"
         android:paddingLeft="@dimen/padding_left_right_componentes"
         android:paddingRight="@dimen/padding_left_right_componentes">
         <TextView
             android:id="@+id/lb_cajasPrimera_itemDetalleReporte"
-            android:layout_width="wrap_content"
+            android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/font_label"
@@ -40,7 +54,7 @@
 
         <TextView
             android:id="@+id/lb_cajasSegunda_itemDetalleReporte"
-            android:layout_width="wrap_content"
+            android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/font_label"
@@ -50,7 +64,7 @@
 
         <TextView
             android:id="@+id/lb_cajasAgranel_itemDetalleReporte"
-            android:layout_width="wrap_content"
+            android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/font_label"
@@ -61,13 +75,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:layout_weight="1"
         android:paddingLeft="@dimen/padding_left_right_componentes"
         android:paddingRight="@dimen/padding_left_right_componentes">
         <TextView
             android:id="@+id/tv_cajasPrimera_itemDetalleReporte"
-            android:layout_width="wrap_content"
+            android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/font_label"
@@ -76,7 +91,7 @@
 
         <TextView
             android:id="@+id/tv_cajasSegunda_itemDetalleReporte"
-            android:layout_width="wrap_content"
+            android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/font_label"
@@ -85,7 +100,7 @@
 
         <TextView
             android:id="@+id/tv_cajasAgranel_itemDetalleReporte"
-            android:layout_width="wrap_content"
+            android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/font_label"

@@ -138,6 +138,7 @@ public class CapturaDialogDialog {
         ArrayList<CatalogoPuestos> categoriasArrayList = controlador.getListaPuestos();
         ArrayAdapter<CatalogoPuestos> categoriasArrayAdapter = new ArrayAdapter<>(controlador.getActivity(),R.layout.support_simple_spinner_dropdown_item,categoriasArrayList);
         sp_puesto.setAdapter(categoriasArrayAdapter);
+        sp_puesto.setSelection(2);
 
         if(trabajadores !=null){
             et_nombre.setText(trabajadores.getNombre());
@@ -452,6 +453,7 @@ public class CapturaDialogDialog {
         final EditText etPrimera =  viewDialog.findViewById(R.id.et_primera_produccion);
         final EditText etSegunda =  viewDialog.findViewById(R.id.et_segunda_produccion);
         final EditText etAgranel =  viewDialog.findViewById(R.id.et_agranel_produccion);
+        etPrimera.requestFocus();
 
         tvNombreTrabajador.setText(trabajador.getTrabajador());
         tvConsecutivo.setText("Consecutivo: "+trabajador.getConsecutivo());

@@ -1,14 +1,12 @@
 package com.luis.corte.models;
 
 import android.database.Cursor;
-import android.util.Log;
-
 import com.luis.corte.Controlers.Controlador;
 
-import java.util.Calendar;
 
 public class ReporteProduccion extends Trabajadores {
     private CatalogoActividades actividad;
+    private Long hora;
     private Puestos puestos;
     private Integer totalPrimera=0;
     private Integer totalSegunda=0;
@@ -37,6 +35,14 @@ public class ReporteProduccion extends Trabajadores {
         this.totalAgranel = Integer.parseInt(cursor.getString(4));
         this.dateMinimo = Long.parseLong(cursor.getString(5));
         this.dateMaximo = Long.parseLong(cursor.getString(6));
+    }
+
+    public Long getHora() {
+        return hora;
+    }
+
+    public void setHora(Long hora) {
+        this.hora = hora;
     }
 
     public Puestos getPuestos() {
