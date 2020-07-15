@@ -10,6 +10,7 @@ public class ReporteCajasTotales extends  Trabajadores{
     private Integer vasquetesSegunda=0;
     private Integer cajasAgranel=0;
     private Integer vasquetesAgranel=0;
+    private Integer totalTrabajadores = 0;
 
 
 
@@ -60,6 +61,14 @@ public class ReporteCajasTotales extends  Trabajadores{
 
     public void setVasquetesSegunda(Integer vasquetesSegunda) {
         this.vasquetesSegunda = vasquetesSegunda;
+    }
+
+    public Integer getTotalTrabajadores() {
+        return totalTrabajadores;
+    }
+
+    public void setTotalTrabajadores(Integer totalTrabajadores) {
+        this.totalTrabajadores = totalTrabajadores;
     }
 
     /***********************************************************/

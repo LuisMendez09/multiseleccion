@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:orientation="horizontal">
-            <TextView
+            <!--<TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
@@ -116,8 +116,17 @@
                 android:layout_weight="3.4"
                 android:textSize="@dimen/font_label"
                 android:paddingRight="@dimen/padding_left_right_componentes"
-                android:text=""/>
-
+                android:text=""/>-->
+            <TextView
+                android:id="@+id/tv_total_trabajadores"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:layout_weight="2.333"
+                android:textColor="@color/colorFont"
+                android:paddingBottom="@dimen/padding_top_bottom_componentes"
+                android:textSize="@dimen/font_label"
+                android:text="Trabajadores"/>
 
             <TextView
                 android:id="@+id/tv_totalPrimera_reporte"

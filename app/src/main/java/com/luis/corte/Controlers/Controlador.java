@@ -1060,7 +1060,7 @@ public class Controlador {
         ReporteCajasTotales registro;
         ReporteCajasTotales totales = null;
         ReporteProduccion registroTotal;
-
+        int totalTrabajadores = 0;
 
         for (ReporteProduccion r : reporteGeneral) {
             if(r.getIdTrabajdor().equals(trabajadorActual)){
@@ -1069,6 +1069,7 @@ public class Controlador {
                 registro = new ReporteCajasTotales(r);
                 reporteCajas.add(registro);
                 trabajadorActual = registro.getIdTrabajdor();
+                totalTrabajadores ++;
             }
 
             registro.setCajas(r.getCajasPrimera(),r.getCajasSegunda(),r.getCajasAgranel());
@@ -1089,9 +1090,12 @@ public class Controlador {
             if (registroTotal != null) {
                 registroTotal.setTotalAgranel(registroTotal.getTotalAgranel()+r.getTotalAgranel());
             }
+
+
         }
 
         for (Long key :  reporteTotal.keySet()) {
+
             ReporteProduccion rp = reporteTotal.get(key);
             if(totales==null){
                 totales = new ReporteCajasTotales(rp);
@@ -1101,10 +1105,15 @@ public class Controlador {
                 totales.setCajas(rp.getCajasPrimera(),0,rp.getCajasAgranel());
                 totales.setVasquetes(rp.getVazquetesPrimera(),0,rp.getVazquetesAgranel());
             }
+
+
+
+
         }
 
         float tCajas = Controlador.getCajas(totalSegunda, 12);
         if (totales != null) {
+            totales.setTotalTrabajadores(totalTrabajadores);
             totales.setCajasSegunda((int) tCajas);
             totales.setVasquetesSegunda(Math.round((tCajas-totales.getCajasSegunda())*(float)12));
         }

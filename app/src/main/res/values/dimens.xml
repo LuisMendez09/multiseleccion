@@ -9,7 +9,7 @@
     <dimen name="font_label">16sp</dimen>
     <dimen name="font_label_titulo">18dp</dimen>
     <dimen name="zise_button_width">150dp</dimen>
-    <dimen name="zise_button_height">70dp</dimen>
+    <dimen name="zise_button_height">55dp</dimen>
 
     <dimen name="padding_zise">2dp</dimen>
     <dimen name="marginirght_button">12dp</dimen>

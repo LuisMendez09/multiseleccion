@@ -30,6 +30,7 @@ public class reporte extends Fragment {
     private TextView tvTotalPrimera;
     private TextView tvTotalSegunda;
     private TextView tvTotalAgranel;
+    private TextView tvTotralTrabajadores;
     private ListView lvReporte;
     private LinearLayout llTotalProduccion;
     private ListaReporteAdapter adapter;
@@ -48,8 +49,10 @@ public class reporte extends Fragment {
         this.tvTotalPrimera =  view.findViewById(R.id.tv_totalPrimera_reporte);
         this.tvTotalSegunda =  view.findViewById(R.id.tv_totalSegunda_reporte);
         this.tvTotalAgranel =  view.findViewById(R.id.tv_totalAgranel_reporte);
+        this.tvTotralTrabajadores =  view.findViewById(R.id.tv_total_trabajadores);
         this.lvReporte =  view.findViewById(R.id.lv_reporte);
         this.llTotalProduccion = view.findViewById(R.id.ll_TotalProduccion);
+
 
         TreeMap<String, Object> reporteDiaTrabajadores = controlador.getReporteDiaTrabajadores();
         ReporteCajasTotales t = (ReporteCajasTotales) reporteDiaTrabajadores.get("totales");
@@ -58,6 +61,7 @@ public class reporte extends Fragment {
             tvTotalPrimera.setText(Controlador.calcularCajas(t.getCajasPrimera(),t.getVasquetesPrimera(),true));
             tvTotalSegunda.setText(Controlador.calcularCajas(t.getCajasSegunda(),t.getVasquetesSegunda(),true));
             tvTotalAgranel.setText(Controlador.calcularCajas(t.getCajasAgranel(),t.getVasquetesAgranel(),false));
+            tvTotralTrabajadores.setText("Trabajadores: " + t.getTotalTrabajadores().toString());
         }else{
             tvTotalPrimera.setText("");
             tvTotalSegunda.setText("");

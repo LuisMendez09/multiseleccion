@@ -950,6 +950,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 +" GROUP BY "+KEY_IDTRABAJADOR_PUESTOS+","+KEY_IDACTIVIDAD_PRODUCCION
                 +" order by "+KEY_DATE_PRODUCCION +" DESC";
 
+
+
+
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list

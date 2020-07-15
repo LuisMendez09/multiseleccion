@@ -69,6 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Primera"
+                android:textSize="@dimen/font_button"
                 android:background="@color/colorAccentSecundario"
                 android:textColor="@color/colorFont"
                 android:textStyle="bold"/>
@@ -76,10 +77,11 @@
             <EditText
                 android:id="@+id/et_primera_produccion"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="match_parent"
                 android:inputType="number"
                 android:paddingLeft="@dimen/padding_left_right_componentes"
                 android:background="@android:color/transparent"
+                android:textSize="@dimen/font_button"
                 android:text="0"/>
 
         </LinearLayout>
@@ -88,24 +90,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/border_text_view"
+            android:textSize="@dimen/font_button"
             android:layout_marginBottom="@dimen/margin_bottom_up_componentes"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="Segunda"
                 android:background="@color/colorAccentSecundario"
+                android:textSize="@dimen/font_button"
                 android:textColor="@color/colorFont"
                 android:textStyle="bold"/>
 
             <EditText
                 android:id="@+id/et_segunda_produccion"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="match_parent"
                 android:inputType="number"
                 android:background="@android:color/transparent"
                 android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:textSize="@dimen/font_button"
                 android:text="0"/>
 
         </LinearLayout>
@@ -115,22 +120,26 @@
             android:layout_height="wrap_content"
             android:background="@drawable/border_text_view"
             android:layout_marginBottom="@dimen/margin_bottom_up_componentes"
+
             android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Agranel"
                 android:background="@color/colorAccentSecundario"
+                android:textSize="@dimen/font_button"
                 android:textColor="@color/colorFont"
+
                 android:textStyle="bold"/>
 
             <EditText
                 android:id="@+id/et_agranel_produccion"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="match_parent"
                 android:inputType="number"
                 android:background="@android:color/transparent"
                 android:paddingLeft="@dimen/padding_left_right_componentes"
+                android:textSize="@dimen/font_button"
                 android:text="0"/>
 
         </LinearLayout>
