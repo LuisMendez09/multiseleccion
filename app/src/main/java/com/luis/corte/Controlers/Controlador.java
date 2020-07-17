@@ -153,9 +153,11 @@ public class Controlador {
         TiposError tiposError = TiposError.EXITOSO;
 
         if(configuracionAnterior!=null){
-            if(configuracion.getPara().equals(configuracionAnterior.getPara())||configuracion.getCc().equals(configuracionAnterior.getCc())
-                    ||configuracion.getAsunto().equals(configuracionAnterior.getAsunto())||configuracion.getMensaje().equals(configuracionAnterior.getMensaje())
-                    ||configuracion.getTiempoMas().equals(configuracionAnterior.getTiempoMas())){
+            if(configuracion.getPara().equals(configuracionAnterior.getPara())
+                    &&configuracion.getCc().equals(configuracionAnterior.getCc())
+                    &&configuracion.getAsunto().equals(configuracionAnterior.getAsunto())
+                    &&configuracion.getMensaje().equals(configuracionAnterior.getMensaje())
+                    &&configuracion.getTiempoMas().equals(configuracionAnterior.getTiempoMas())){
                 tiposError = TiposError.SIN_CAMBIOS;
             }
         }
